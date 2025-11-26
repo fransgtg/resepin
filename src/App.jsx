@@ -29,9 +29,7 @@ function App() {
     { 
       id: 1, 
       title: "Oseng Tempe", 
-      img: "https://i.pinimg.com/1200x/9a/07/c4/9a07c403dfafb27273c4c82d8a419191.jpg", 
-      time: "15 Menit",
-      difficulty: "Mudah"
+      img: "https://i.pinimg.com/1200x/9a/07/c4/9a07c403dfafb27273c4c82d8a419191.jpg"
     },
     { 
       id: 2, 
@@ -41,7 +39,7 @@ function App() {
     { 
       id: 3, 
       title: "Sayur Asem", 
-      img: "https://images.unsplash.com/photo-1604152135912-04a022e23696?q=80&w=800&auto=format&fit=crop"
+      img: "sayurasem.jpg"
     }
   ];
 
