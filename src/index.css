@@ -1,0 +1,22 @@
+/* src/index.css */
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  width: 100vw; /* Pastikan body ambil lebar penuh */
+  overflow-x: hidden;
+}
+
+#root {
+  width: 100%;       /* PENTING: Agar root tidak dibatasi */
+  max-width: 100%;   /* Hapus batasan lebar bawaan */
+  margin: 0;
+  padding: 0;
+  text-align: left;  /* Reset text align center bawaan */
+}

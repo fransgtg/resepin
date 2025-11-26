@@ -1,0 +1,300 @@
+/* src/App.css */
+
+/* 1. IMPORT FONT */
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700;900&family=Poppins:wght@400;500;600;700&display=swap');
+
+/* 2. RESET & GLOBAL STYLES */
+* {
+  box-sizing: border-box; /* Agar padding tidak merusak ukuran elemen */
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Poppins', sans-serif;
+  color: #333;
+  width: 100%;
+  min-height: 100vh;
+  overflow-x: hidden;
+
+  /* --- PENGATURAN BACKGROUND --- */
+  
+  /* 1. Warna dasar (jika gambar gagal dimuat) */
+  background-color: #CBD99B;
+
+  /* 2. Tumpuk Warna Transparan di atas Gambar */
+  /* Angka 0.85 di akhir adalah tingkat ketebalan warna (Opacity). 
+     - Ganti 0.85 jadi 0.5 jika ingin gambarnya lebih jelas.
+     - Ganti 0.85 jadi 0.95 jika ingin gambarnya lebih samar. */
+  background-image: 
+    linear-gradient(rgba(203, 217, 155, 0.85), rgba(203, 217, 155, 0.85)),
+    url('https://i.pinimg.com/736x/43/a6/5d/43a65ded8b9ffa2e09569e0e6710c321.jpg');
+
+  /* 3. Ukuran dan perulangan gambar */
+  background-size: 350px auto; 
+  background-repeat: repeat;
+  background-attachment: fixed; /* Opsional: Agar background diam saat discroll (keren!) */
+}
+
+#root, .app-main {
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* 3. NAVBAR */
+.navbar {
+  background-color: #151e32; /* Biru gelap */
+  width: 100%;
+  padding: 1rem 5%; /* Padding kiri-kanan responsif */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  color: white;
+  position: sticky; /* Navbar menempel saat discroll */
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.logo {
+  font-family: 'Lato', sans-serif; /* Menggunakan font Lato */
+  font-weight: 900;                /* Ketebalan 'Black' agar tegas */
+  font-size: 2.2rem;               /* Ukuran sedikit diperbesar */
+  color: #FFF;                  /* Tetap warna hijau neon */
+  letter-spacing: -1px;            /* Jarak huruf didempetkan sedikit (modern look) */
+  font-style: italic;              /* Opsional: Miring agar dinamis (hapus jika ingin tegak) */
+  text-shadow: 2px 2px 0px rgba(0,0,0,0.2); /* Sedikit bayangan agar pop-up */
+}
+
+.search-container {
+  position: relative;
+  width: 40%;
+  max-width: 500px;
+  margin: 0 15px;
+}
+
+.search-input {
+  width: 100%;
+  padding: 12px 45px 12px 20px;
+  border-radius: 50px;
+  border: none;
+  outline: none;
+  font-size: 0.9rem;
+}
+
+.search-btn {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  display: flex;
+  align-items: center;
+}
+
+.nav-links {
+  display: flex;
+  gap: 25px;
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.nav-links a, .menu-item {
+  color: white;
+  text-decoration: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.nav-links a:hover {
+  opacity: 0.8;
+}
+
+/* 4. CONTAINER UTAMA */
+.container {
+  width: 100%;
+  max-width: 1200px; /* Batas lebar konten agar tidak terlalu melebar di monitor besar */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+/* 5. HERO SECTION */
+.hero {
+  margin-top: 20px;
+  margin-bottom: 40px;
+}
+
+.hero-img-wrapper {
+  position: relative;
+  width: 100%;
+  height: clamp(250px, 50vw, 450px); /* Tinggi dinamis: min 250px, max 450px */
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+  background-color: #ddd; /* Placeholder color */
+}
+
+.hero-img-wrapper img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Agar gambar tidak gepeng */
+  border-radius: 30px;
+}
+
+/* Tombol Navigasi Hero (Panah) */
+.nav-btn {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255,255,255,0.3);
+  backdrop-filter: blur(4px);
+  border: none;
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  color: white;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s;
+  z-index: 10;
+}
+
+.nav-btn:hover {
+  background: rgba(255,255,255,0.7);
+  color: #333;
+}
+
+.prev { left: 20px; }
+.next { right: 20px; }
+
+/* Dots Indikator */
+.dots {
+  position: absolute;
+  bottom: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+  z-index: 10;
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: rgba(255,255,255,0.5);
+  border-radius: 50%;
+}
+
+.dot.active {
+  background: white;
+  transform: scale(1.2);
+}
+
+/* 6. FILTERS */
+.filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  margin-bottom: 30px;
+}
+
+.btn-filter {
+  background-color: #f97316; /* Warna Oranye */
+  color: white;
+  border: none;
+  padding: 10px 24px;
+  border-radius: 50px;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: transform 0.2s;
+}
+
+.btn-filter:hover {
+  transform: translateY(-2px);
+  background-color: #ea580c;
+}
+
+/* 7. GRID RESEP */
+.recipe-grid {
+  display: grid;
+  /* Otomatis membuat kolom sebanyak mungkin dengan lebar minimal 280px */
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 25px;
+  padding-bottom: 50px;
+}
+
+.card {
+  position: relative;
+  height: 250px;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+  transition: transform 0.3s;
+  background-color: white;
+}
+
+.card:hover {
+  transform: scale(1.02);
+}
+
+.card img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.card-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px;
+  background: linear-gradient(to top, rgba(0,0,0,0.8), transparent);
+}
+
+.card-overlay h3 {
+  margin: 0;
+  color: white;
+  font-size: 1.2rem;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+}
+
+/* 8. MOBILE RESPONSIVE (Untuk HP) */
+@media (max-width: 768px) {
+  .navbar {
+    flex-direction: column;
+    gap: 15px;
+    padding: 15px;
+  }
+
+  .search-container {
+    width: 100%;
+    margin: 0;
+  }
+
+  .nav-links {
+    width: 100%;
+    justify-content: center;
+    font-size: 0.85rem;
+  }
+
+  .filters {
+    justify-content: center;
+  }
+
+  .hero-img-wrapper {
+    border-radius: 20px;
+  }
+}
