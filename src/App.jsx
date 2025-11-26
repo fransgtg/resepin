@@ -2,12 +2,13 @@ import React, { useState } from 'react';
 import './App.css';
 
 // --- IMPORT KOMPONEN UI ---
-import Navbar from './components/Navbar';
+import NavBar from './components/NavBar'; // Pastikan nama filenya NavBar.jsx
 import Hero from './components/Hero';
 import RecipeCard from './components/RecipeCard';
 import RecipeDetail from './components/RecipeDetail';
+import AuthForm from './components/AuthForm';
 
-/* Ikon Filter (Sisa satu icon spesifik halaman ini) */
+/* Ikon Filter (Khusus halaman ini) */
 const ChevronDown = () => (
   <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
     <path strokeLinecap="round" strokeLinejoin="round" d="M19 9l-7 7-7-7" />
@@ -20,48 +21,94 @@ const FilterIcon = () => (
 );
 
 function App() {
-  // State untuk menyimpan resep yang sedang dipilih (Detail)
+  // --- STATE NAVIGASI ---
   const [selectedRecipe, setSelectedRecipe] = useState(null);
+  const [isLoginPage, setIsLoginPage] = useState(false);
+  
+  // State untuk menyimpan User yang sedang login
+  const [currentUser, setCurrentUser] = useState(null);
 
-  // --- DATA RESEP (HANYA GAMBAR & INFO DASAR) ---
-  // Detail langkah & bahan dihapus sementara untuk persiapan backend
+  // --- DATA RESEP SEDERHANA ---
   const recipes = [
     { 
       id: 1, 
       title: "Oseng Tempe", 
-      img: "https://i.pinimg.com/1200x/9a/07/c4/9a07c403dfafb27273c4c82d8a419191.jpg"
+      img: "/tempeoseng.jpg", 
+      time: "15 Menit",
+      difficulty: "Mudah"
     },
     { 
       id: 2, 
       title: "Capcai Kuah", 
-      img: "capcai.jpg"
+      img: "/capcai.jpg", 
+      time: "20 Menit",
+      difficulty: "Menengah"
     },
     { 
       id: 3, 
       title: "Sayur Asem", 
-      img: "sayurasem.jpg"
+      img: "/sayurasem.jpg", 
+      time: "30 Menit",
+      difficulty: "Mudah"
     }
   ];
 
+  // Fungsi Reset ke Home
+  const goHome = () => {
+    setSelectedRecipe(null);
+    setIsLoginPage(false);
+  };
+
+  // Fungsi Saat Login Berhasil
+  const handleLoginSuccess = (userData) => {
+    console.log("User berhasil login:", userData);
+    setCurrentUser(userData); // Simpan data user ke state utama
+    setIsLoginPage(false);    // Tutup form login & kembali ke home
+  };
+
+  // Fungsi Saat Log Out
+  const handleLogout = () => {
+    console.log("User logout");
+    setCurrentUser(null); // 1. Hapus data user (tombol jadi Login/Register lagi)
+    goHome(); // 2. Kembalikan tampilan ke halaman utama (Home)
+  };
+
   return (
     <div className="app-main">
-      {/* Navbar kirim fungsi reset ke Home */}
-      <Navbar onGoHome={() => setSelectedRecipe(null)} />
+      {/* Navbar: Mengirimkan semua fungsi dan data yang dibutuhkan */}
+      <NavBar 
+        onGoHome={goHome} 
+        onLoginClick={() => {
+          setIsLoginPage(true); // Buka halaman login
+          setSelectedRecipe(null); // Pastikan detail resep tertutup
+        }}
+        currentUser={currentUser} // Kirim data user untuk cek status login
+        onLogout={handleLogout}   // Kirim fungsi logout ke Navbar
+      />
       
       <main className="container">
         
-        {/* LOGIKA PERPINDAHAN HALAMAN */}
-        {selectedRecipe ? (
+        {/* --- LOGIKA PERPINDAHAN HALAMAN (SWITCHING) --- */}
+        
+        {isLoginPage ? (
           
-          /* 1. TAMPILAN DETAIL */
+          /* TAMPILAN 1: HALAMAN LOGIN / REGISTER */
+          /* Kirim fungsi handleLoginSuccess agar form bisa melapor kalau sukses */
+          <AuthForm onCancel={goHome} onLoginSuccess={handleLoginSuccess} />
+          
+        ) : selectedRecipe ? (
+          
+          /* TAMPILAN 2: DETAIL RESEP */
           <RecipeDetail recipe={selectedRecipe} />
           
         ) : (
           
-          /* 2. TAMPILAN HOME */
+          /* TAMPILAN 3: HOME (DEFAULT) */
           <>
+            {/* Slider Gambar Besar */}
             <Hero />
             
+            {/* Tombol Filter */}
             <div className="filters">
                <button className="btn-filter">
                  Telusuri berdasarkan <ChevronDown />
@@ -71,6 +118,7 @@ function App() {
                </button>
             </div>
 
+            {/* Grid Kartu Resep */}
             <div className="recipe-grid">
               {recipes.map((item) => (
                 <RecipeCard 
