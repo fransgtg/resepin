@@ -613,3 +613,108 @@ body {
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); /* Efek bayangan merah */
 }
+
+/*11. Artikel CSS */
+.article-detail-page {
+    padding-top: 80px; 
+    padding-bottom: 50px;
+    width: 100%;
+    min-height: calc(100vh - 80px);
+}
+
+.article-container {
+    width: 100%;
+    max-width: 1000px; 
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.article-title-heading {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #435663; 
+    margin-top: 20px;
+    margin-bottom: 25px;
+    padding-left: 10px;
+}
+
+.article-content-wrapper {
+    display: flex;
+    gap: 30px; 
+    background-color: white; 
+    padding: 30px;
+    border-radius: 20px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+/* Kolom Kiri: Gambar */
+.article-image-section {
+    flex: 0 0 350px; 
+    max-width: 350px;
+}
+
+.article-main-image {
+    width: 100%;
+    height: auto;
+    border-radius: 15px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+}
+
+/* Kolom Kanan: Teks */
+.article-text-section {
+    flex: 1; 
+    font-size: 1rem;
+    line-height: 1.7;
+    color: #4a4a4a;
+    text-align: justify;
+}
+
+.article-text-section p {
+    margin-bottom: 18px;
+}
+
+.article-text-section h3 {
+    font-family: 'Poppins', sans-serif;
+    color: #435663;
+    font-size: 1.2rem;
+    margin-top: 25px;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+.health-tips-list {
+    margin-left: 0;
+    padding-left: 20px;
+    list-style-position: outside;
+    list-style-type: decimal;
+    line-height: 1.6;
+}
+
+.health-tips-list li {
+    margin-bottom: 8px;
+    color: #4a4a4a;
+}
+
+/* RESPONSIVE ARTIKEL DETAIL */
+@media (max-width: 992px) {
+    .article-content-wrapper {
+        flex-direction: column;
+        gap: 20px;
+    }
+    
+    .article-image-section {
+        max-width: 100%;
+        order: -1; 
+    }
+    
+    .article-main-image {
+        max-width: 400px;
+        width: 100%;
+        display: block;
+        margin: 0 auto;
+    }
+
+    .article-title-heading {
+        font-size: 2rem;
+    }
+}
