@@ -714,8 +714,40 @@ body {
     margin-bottom: 20px;
   }
 
+<<<<<<< HEAD
   .detail-img-wrapper { height: 250px; }
   .detail-title-info h1 { font-size: 2rem; }
   .badges { justify-content: center; }
   .detail-content-card { padding: 30px; }
 }
+=======
+  .detail-title-info h1 {
+    font-size: 2rem;
+  }
+
+  .badges {
+    justify-content: center;
+  }
+
+  .lists-row {
+    flex-direction: column;
+    gap: 30px;
+  }
+  
+  .detail-content-card {
+    padding: 30px;
+  }
+}
+
+.login-btn[title="Klik untuk keluar"]:hover {
+  background-color: #dc2626 !important; /* Warna merah yang lebih gelap */
+  border-color: #dc2626 !important;
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.4); /* Efek bayangan merah */
+}
+
+
+        font-size: 2rem;
+    }
+}
+>>>>>>> e6518685c77b1f422bd58b02a4680742063a8dc5
