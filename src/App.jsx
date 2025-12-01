@@ -11,7 +11,7 @@ import AuthForm from './components/AuthForm';
 import ArticleList from './components/ArticleList';
 
 // --- GAMBAR DEFAULT ---
-const DEFAULT_IMAGE = "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?q=80&w=800&auto=format&fit=crop";
+const DEFAULT_IMAGE = "logoresepin.jpg";
 
 /* Ikon Filter */
 const FilterIcon = () => (
