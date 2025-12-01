@@ -1,25 +1,24 @@
 import React from 'react';
 
-const RecipeDetail = ({ recipe }) => {
-  // 1. Guard Clause: Jika data resep kosong/loading, jangan render apa-apa
-  // Ini mencegah error "Cannot read property of null"
+// Menerima prop onClose untuk tombol kembali
+const RecipeDetail = ({ recipe, onClose }) => {
+  // Guard clause: Jika data belum ada, jangan render apa-apa
   if (!recipe) return null;
 
-  // 2. Helper: Membersihkan teks dari karakter aneh CSV (seperti kutip ganda)
+  // Helper: Membersihkan teks dari karakter aneh CSV (tanda kutip ganda, spasi berlebih)
   const cleanText = (text) => {
     if (!text) return "";
     return String(text).replace(/^"|"$/g, '').trim(); 
   };
 
-  // 3. Helper: Memastikan data selalu dalam bentuk Array
-  // Data CSV kadang terbaca sebagai string panjang "A--B--C". Kita perlu split jadi ["A", "B", "C"]
+  // Helper: Memastikan data selalu dalam bentuk Array
   const ensureArray = (data) => {
-    if (Array.isArray(data)) return data; // Jika sudah array, aman
+    if (Array.isArray(data)) return data; 
     if (typeof data === 'string') {
-      // Cek apakah pemisahnya '--' (standar dataset kamu) atau ',' atau lainnya
+      // Jika format CSV dipisah '--', split. Jika tidak, jadikan satu item array.
       return data.includes('--') ? data.split('--') : [data];
     }
-    return []; // Jika kosong/undefined, kembalikan array kosong biar tidak error di .map
+    return []; 
   };
 
   const ingredientsList = ensureArray(recipe.ingredients);
@@ -28,33 +27,48 @@ const RecipeDetail = ({ recipe }) => {
   return (
     <div className="recipe-detail-container">
       
-      {/* --- HEADER (GAMBAR & JUDUL) --- */}
+      {/* TOMBOL KEMBALI (Memanggil fungsi onClose dari App.jsx) */}
+      <button 
+        onClick={onClose}
+        style={{
+          marginBottom: '20px',
+          padding: '10px 20px',
+          backgroundColor: '#f3f4f6',
+          border: 'none',
+          borderRadius: '50px',
+          cursor: 'pointer',
+          fontWeight: 'bold',
+          color: '#555',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          fontSize: '0.9rem',
+          transition: 'background 0.2s'
+        }}
+        onMouseOver={(e) => e.currentTarget.style.backgroundColor = '#e5e7eb'}
+        onMouseOut={(e) => e.currentTarget.style.backgroundColor = '#f3f4f6'}
+      >
+        ← Kembali ke Daftar
+      </button>
+
+      {/* --- HEADER: GAMBAR & JUDUL --- */}
       <div className="detail-header">
         <div className="detail-img-wrapper">
-          {/* Gunakan gambar dari data, atau placeholder jika kosong */}
+          {/* Gambar Resep */}
           <img 
             src={recipe.img || "https://placehold.co/600x400?text=No+Image"} 
-            alt={recipe.title || "Detail Resep"} 
-            // Fallback jika URL gambar error
+            alt={recipe.title} 
+            // Fallback jika gambar error
             onError={(e) => { e.target.src = "https://placehold.co/600x400?text=Image+Error"; }}
           />
         </div>
         
         <div className="detail-title-info">
-          {/* ID Resep (Opsional, untuk debug) */}
-          <span style={{ fontSize: '0.85rem', color: '#888', display: 'block', marginBottom: '5px' }}>
-            ID: {recipe.id}
-          </span>
-
-          <h1>{recipe.title || "Tanpa Judul"}</h1>
-          
+          <h1>{recipe.title}</h1>
           <div className="badges">
-            {/* Kategori */}
             <span className="badge orange">
               {recipe.category || 'Umum'}
             </span>
-            
-            {/* Rating / Loves */}
             {recipe.loves && (
               <span className="badge orange">
                 ❤️ {recipe.loves} Suka
@@ -64,17 +78,18 @@ const RecipeDetail = ({ recipe }) => {
         </div>
       </div>
 
-      {/* --- KONTEN (BAHAN & LANGKAH) --- */}
+      {/* --- KONTEN: BAHAN & LANGKAH --- */}
       <div className="detail-content-card">
         <div className="lists-row">
           
-          {/* KOLOM BAHAN */}
+          {/* KOLOM BAHAN-BAHAN */}
           <div className="list-column">
             <h3>Bahan-bahan:</h3>
             <ul>
               {ingredientsList.length > 0 ? (
                 ingredientsList.map((ing, idx) => {
                   const txt = cleanText(ing);
+                  // Hanya tampilkan jika teks tidak kosong
                   return txt ? <li key={idx}>{txt}</li> : null;
                 })
               ) : (
@@ -83,15 +98,15 @@ const RecipeDetail = ({ recipe }) => {
             </ul>
           </div>
           
-          {/* KOLOM INFO TAMBAHAN / SUMBER */}
+          {/* KOLOM INFO MASAK & SUMBER */}
           <div className="list-column">
             <h3>Info Masak:</h3>
             <p style={{ lineHeight: '1.6', color: '#555', marginBottom: '15px' }}>
-              Resep ini cocok untuk menu harian keluarga. 
-              Pastikan bahan dicuci bersih dan sesuaikan rasa dengan selera.
+              Resep ini disajikan untuk inspirasi menu harian keluarga. 
+              Pastikan bahan dicuci bersih sebelum dimasak.
             </p>
             
-            {/* Link Sumber Asli (Jika ada di CSV) */}
+            {/* Link Sumber Asli (URL) */}
             {recipe.url && (
               <div style={{ marginTop: '10px' }}>
                 <a 
@@ -101,7 +116,7 @@ const RecipeDetail = ({ recipe }) => {
                   style={{ 
                     color: '#f97316', 
                     fontWeight: 'bold', 
-                    textDecoration: 'none',
+                    textDecoration: 'none', 
                     borderBottom: '1px dashed #f97316'
                   }}
                 >

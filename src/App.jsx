@@ -243,7 +243,13 @@ function App() {
             <AuthForm onCancel={goHome} onLoginSuccess={handleLoginSuccess} />
           )
         ) : selectedRecipe ? (
-          <RecipeDetail recipe={selectedRecipe} />
+          
+          /* PERBAIKAN: Menambahkan prop onClose */
+          <RecipeDetail 
+            recipe={selectedRecipe} 
+            onClose={() => setSelectedRecipe(null)} 
+          />
+          
         ) : (
           <>
             <Hero />
