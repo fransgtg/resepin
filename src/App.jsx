@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Papa from 'papaparse'; 
+import { supabase } from './supabaseClient'; // [PENTING] Import koneksi Supabase
 import './App.css';
 
 // --- IMPORT KOMPONEN UI ---
@@ -21,8 +22,7 @@ const FilterIcon = () => (
 );
 
 function App() {
-
-  // STATE
+  // --- STATE ---
   const [allRecipes, setAllRecipes] = useState([]);
   const [displayedRecipes, setDisplayedRecipes] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -30,16 +30,17 @@ function App() {
   const [activeCategory, setActiveCategory] = useState('All'); 
   const [searchQuery, setSearchQuery] = useState(''); 
   const [showFilterMenu, setShowFilterMenu] = useState(false); 
-
+  
   const [selectedRecipe, setSelectedRecipe] = useState(null);
   const [isLoginPage, setIsLoginPage] = useState(false);
   const [isArticlePage, setIsArticlePage] = useState(false);
+
+  // --- STATE USER (SUPABASE AUTH) ---
   const [currentUser, setCurrentUser] = useState(null);
 
   const recipeSectionRef = useRef(null);
 
-
-  // Menentukan kategori dari nama file
+  // Helper Kategori
   const getCategoryName = (fileName) => {
     const name = fileName.toLowerCase();
     if (name.includes('ayam')) return "Olahan Ayam";
@@ -53,8 +54,41 @@ function App() {
     return "Aneka Resep";
   };
 
+  // --- EFFECT 1: CEK LOGIN SUPABASE (Backend) ---
+  useEffect(() => {
+    // Fungsi untuk memformat data user dari session Supabase
+    const formatUser = (user) => {
+      if (!user) return null;
+      return {
+        id: user.id,
+        email: user.email,
+        // Ambil nama dari metadata (saat register) atau username dari email
+        name: user.user_metadata?.full_name || user.email.split('@')[0]
+      };
+    };
 
-  // LOAD DATA CSV
+    // 1. Cek sesi saat ini (saat pertama load/refresh)
+    const checkSession = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        setCurrentUser(formatUser(session.user));
+      }
+    };
+    checkSession();
+
+    // 2. Dengarkan perubahan login/logout secara real-time
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session) {
+        setCurrentUser(formatUser(session.user));
+      } else {
+        setCurrentUser(null);
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  // --- EFFECT 2: LOAD DATA CSV ---
   useEffect(() => {
     const loadCsvData = async () => {
       setLoading(true);
@@ -88,8 +122,11 @@ function App() {
                 skipEmptyLines: true,
                 complete: (results) => {
                   const categoryName = getCategoryName(file);
+                  // Bersihkan ID dari karakter aneh agar URL dan Database aman
+                  const cleanFileName = file.split('/').pop().replace('.csv', '');
+
                   const formattedData = results.data.map((item, index) => ({
-                    id: `${file}-${index}`, 
+                    id: `${cleanFileName}-${index}`, 
                     title: item.Title,      
                     ingredients: item.Ingredients ? item.Ingredients.split('--') : [],
                     steps: item.Steps ? item.Steps.split('--') : [],
@@ -111,8 +148,15 @@ function App() {
         }
 
         setAllRecipes(tempRecipes);
-        setLoading(false);
+        
+        const uniqueCategories = [...new Set(tempRecipes.map(r => r.category))];
+        const representativeRecipes = uniqueCategories.map(cat => {
+          return tempRecipes.find(r => r.category === cat);
+        }).filter(Boolean);
+        setDisplayedRecipes(representativeRecipes);
 
+        setLoading(false);
+        
       } catch (error) {
         console.error("Gagal load CSV:", error);
         setLoading(false);
@@ -122,59 +166,109 @@ function App() {
     loadCsvData();
   }, []);
 
+  // --- EFFECT 3: BACA URL (RESTORE POSISI) ---
+  useEffect(() => {
+    if (allRecipes.length === 0) return;
 
+    const params = new URLSearchParams(window.location.search);
+    const categoryParam = params.get('kategori');
+    const recipeIdParam = params.get('resep');
+    const pageParam = params.get('page');
 
-  // FILTERING: berdasarkan kategori & search query
+    // 1. Restore Halaman Artikel
+    if (pageParam === 'artikel') {
+      setIsArticlePage(true);
+      setSelectedRecipe(null);
+      setIsLoginPage(false);
+    } 
+    // 2. Restore Detail Resep
+    else if (recipeIdParam) {
+      const foundRecipe = allRecipes.find(r => r.id === recipeIdParam);
+      if (foundRecipe) {
+        setSelectedRecipe(foundRecipe);
+      }
+    }
+
+    // 3. Restore Kategori
+    if (categoryParam) {
+      const isValidCategory = allRecipes.some(r => r.category === categoryParam);
+      if (isValidCategory || categoryParam === 'All') {
+        setActiveCategory(categoryParam);
+      }
+    }
+  }, [allRecipes]); 
+
+  // --- LOGIKA FILTER & SEARCH ---
   useEffect(() => {
     if (allRecipes.length === 0) return;
 
     let result = allRecipes;
 
-    // Filter Kategori
-    if (activeCategory !== 'All') {
-      result = result.filter(r => r.category === activeCategory);
-    }
-
-    // Filter Search
     if (searchQuery.trim() !== '') {
       result = result.filter(r => 
         r.title.toLowerCase().includes(searchQuery.toLowerCase())
       );
-    } 
-    // Jika kategori All dan tidak ada search → tampilkan perwakilan
-    else if (activeCategory === 'All') {
-      const uniqueCategories = [...new Set(allRecipes.map(r => r.category))];
-      result = uniqueCategories.map(cat => {
-        return allRecipes.find(r => r.category === cat);
-      }).filter(Boolean);
+    } else {
+      if (activeCategory === 'All') {
+        const uniqueCategories = [...new Set(allRecipes.map(r => r.category))];
+        result = uniqueCategories.map(cat => {
+          return allRecipes.find(r => r.category === cat);
+        }).filter(Boolean);
+      } else {
+        result = result.filter(r => r.category === activeCategory);
+      }
     }
-
     setDisplayedRecipes(result);
+  }, [searchQuery, activeCategory, allRecipes]);
 
-  }, [allRecipes, activeCategory, searchQuery]);
 
+  // --- HANDLERS ---
+  
+  const handleOpenRecipe = (item) => {
+    setSelectedRecipe(item);
+    const url = new URL(window.location);
+    url.searchParams.set('resep', item.id);
+    url.searchParams.delete('page'); 
+    window.history.pushState({}, '', url);
+  };
 
-  // HANDLERS
+  const handleCloseDetail = () => {
+    setSelectedRecipe(null);
+    const url = new URL(window.location);
+    url.searchParams.delete('resep');
+    window.history.pushState({}, '', url);
+
+    setTimeout(() => {
+      if (recipeSectionRef.current) {
+        recipeSectionRef.current.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }, 100);
+  };
+
   const handleFilterClick = (category) => {
     setActiveCategory(category);
+    setSearchQuery('');
     setShowFilterMenu(false);
+
+    const url = new URL(window.location);
+    url.searchParams.set('kategori', category);
+    url.searchParams.delete('resep');
+    url.searchParams.delete('page');
+    window.history.pushState({}, '', url);
   };
 
   const handleSearch = (query) => {
     setSearchQuery(query);
-
-    if (recipeSectionRef.current && currentUser) {
-      recipeSectionRef.current.scrollIntoView({
-        behavior: "smooth",
-        block: "start"
-      });
-    }
+    if (query) setActiveCategory('All');
   };
 
   const goHome = () => {
     setSelectedRecipe(null);
     setIsLoginPage(false);
     setIsArticlePage(false);
+    setActiveCategory('All');
+    
+    window.history.pushState({}, '', window.location.pathname);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -182,41 +276,46 @@ function App() {
     setSelectedRecipe(null);
     setIsLoginPage(false);
     setIsArticlePage(false);
+    
+    const url = new URL(window.location);
+    url.searchParams.delete('page');
+    url.searchParams.delete('resep');
+    window.history.pushState({}, '', url);
+
     setTimeout(() => {
-      recipeSectionRef.current?.scrollIntoView({ behavior: 'smooth' });
+      if (recipeSectionRef.current) {
+        recipeSectionRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
     }, 100);
   };
 
   const goToArticle = () => {
-    if (currentUser) {
-      setIsArticlePage(true);
-      setSelectedRecipe(null);
-      setIsLoginPage(false);
-    } else {
-      setIsLoginPage(true);
-      setSelectedRecipe(null);
-      setIsArticlePage(false);
-    }
+    setIsArticlePage(true);
+    setSelectedRecipe(null);
+    setIsLoginPage(false);
+
+    const url = new URL(window.location);
+    url.searchParams.set('page', 'artikel');
+    url.searchParams.delete('resep');
+    url.searchParams.delete('kategori');
+    window.history.pushState({}, '', url);
   };
 
-  const handleLoginSuccess = (userData) => {
-    setCurrentUser(userData);
+  const handleLoginSuccess = () => {
+    // Tidak perlu set user manual, karena Listener Supabase di useEffect akan menangkapnya
     setIsLoginPage(false);
   };
 
-  const handleLogout = () => {
-    setCurrentUser(null);
+  const handleLogout = async () => {
+    // Logout dari Supabase
+    await supabase.auth.signOut();
     goHome();
   };
 
-
   const categoriesList = ['All', ...new Set(allRecipes.map(r => r.category))];
-
 
   return (
     <div className="app-main">
-      
-      {/* NAVBAR */}
       <NavBar 
         onGoHome={goHome} 
         onLoginClick={() => {
@@ -226,11 +325,10 @@ function App() {
         }}
         onArticleClick={goToArticle}
         onRecipeClick={goToRecipes}
-        onSearch={handleSearch}
+        onSearch={handleSearch} 
         currentUser={currentUser}
         onLogout={handleLogout}
       />
-      
       
       <main className="container">
         
@@ -244,18 +342,16 @@ function App() {
           )
         ) : selectedRecipe ? (
           
-          /* PERBAIKAN: Menambahkan prop onClose */
           <RecipeDetail 
             recipe={selectedRecipe} 
-            onClose={() => setSelectedRecipe(null)} 
+            onClose={handleCloseDetail} 
+            currentUser={currentUser} 
           />
-          
+
         ) : (
           <>
             <Hero />
             
-
-            {/* FILTER AREA */}
             <div className="filters" ref={recipeSectionRef} style={{ position: 'relative' }}>
                <button 
                  className={`btn-filter ${showFilterMenu ? 'active' : ''}`}
@@ -281,7 +377,6 @@ function App() {
                )}
             </div>
 
-
             {/* GRID RESEP */}
             {currentUser ? (
               loading ? (
@@ -292,7 +387,7 @@ function App() {
                 <>
                   <h3 style={{ marginBottom: '20px', color: '#151e32', fontFamily: 'Poppins, sans-serif' }}>
                     {searchQuery 
-                      ? `Hasil Pencarian: "${searchQuery}"`
+                      ? `Hasil Pencarian: "${searchQuery}"` 
                       : (activeCategory === 'All' ? 'Inspirasi Menu Hari Ini' : `Koleksi ${activeCategory}`)
                     }
                   </h3>
@@ -305,19 +400,19 @@ function App() {
                           title={item.title} 
                           img={item.img} 
                           category={item.category} 
-                          onClick={() => setSelectedRecipe(item)} 
+                          onClick={() => handleOpenRecipe(item)} 
                         />
                       ))
                     ) : (
-                      <p>Tidak ada resep ditemukan.</p>
+                      <div style={{ gridColumn: '1/-1', textAlign: 'center', padding: '20px', color: '#888' }}>
+                        <p>Tidak ada resep ditemukan untuk "{searchQuery}".</p>
+                      </div>
                     )}
                   </div>
                 </>
               )
             ) : (
-
-              // LOCKED VIEW (belum login)
-              <div className="locked-content" style={{ marginTop: '20px', textAlign: 'center', padding: '40px' }}>
+              <div className="locked-content" style={{ marginTop: '20px', textAlign: 'center', padding: '40px', backgroundColor: 'rgba(255,255,255,0.7)', borderRadius: '20px' }}>
                 <div style={{ fontSize: '3rem', marginBottom: '10px' }}>🔐</div>
                 <h3 style={{ color: '#151e32', marginBottom: '10px' }}>Koleksi Resep Terkunci</h3>
                 <p style={{ color: '#666', marginBottom: '20px' }}>
@@ -326,6 +421,10 @@ function App() {
                 <button 
                   className="btn-login-redirect" 
                   onClick={() => setIsLoginPage(true)}
+                  style={{
+                    backgroundColor: '#f97316', color: 'white', padding: '12px 30px', 
+                    border: 'none', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer'
+                  }}
                 >
                   Login untuk Melihat Resep
                 </button>
