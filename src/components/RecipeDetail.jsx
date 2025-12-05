@@ -1,14 +1,17 @@
 import React, { useEffect } from 'react';
-import CommentsSection from './CommentsSection'; // Pastikan file ini ada di folder yang sama
+import CommentsSection from './CommentsSection';
+import './Detail.css'; 
 
-const RecipeDetail = ({ recipe, onClose, currentUser }) => {
+const RecipeDetail = ({ recipe, onClose, currentUser, onDelete }) => {
   
-  // Scroll ke paling atas saat detail dibuka
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   if (!recipe) return null;
+
+  // Cek apakah user yang login adalah pemilik resep ini
+  const isOwner = currentUser && recipe.user_id && currentUser.id === recipe.user_id;
 
   return (
     <div className="recipe-detail-overlay" style={{
@@ -37,6 +40,23 @@ const RecipeDetail = ({ recipe, onClose, currentUser }) => {
           ✕
         </button>
 
+        {/* [BARU] Tombol Hapus (Hanya untuk Pemilik) */}
+        {isOwner && (
+          <button 
+            onClick={onDelete}
+            title="Hapus Resep"
+            style={{
+              position: 'absolute', top: '20px', right: '70px', // Di sebelah tombol close
+              backgroundColor: '#fee2e2', border: '1px solid #ef4444', borderRadius: '50%',
+              width: '40px', height: '40px', cursor: 'pointer', fontSize: '1.2rem',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              color: '#dc2626'
+            }}
+          >
+            🗑️
+          </button>
+        )}
+
         {/* Header: Kategori & Judul */}
         <span style={{ 
           color: '#f97316', fontWeight: 'bold', textTransform: 'uppercase', 
@@ -58,9 +78,14 @@ const RecipeDetail = ({ recipe, onClose, currentUser }) => {
           }} 
         />
 
-        {/* Konten Resep (Bahan & Langkah) */}
+        {/* Info Sumber Resep (Jika ada) */}
+        {recipe.url && (
+          <div style={{ marginBottom: '20px', fontStyle: 'italic', color: '#666' }}>
+            Sumber: <a href={recipe.url} target="_blank" rel="noreferrer" style={{ color: '#f97316' }}>Lihat resep asli</a>
+          </div>
+        )}
+
         <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px' }}>
-          
           {/* Bahan-bahan */}
           <div className="ingredients">
             <h3 style={{ borderBottom: '3px solid #f97316', display: 'inline-block', marginBottom: '15px', paddingBottom: '5px' }}>
@@ -96,8 +121,6 @@ const RecipeDetail = ({ recipe, onClose, currentUser }) => {
           </div>
         </div>
 
-        {/* --- FITUR KOMENTAR --- */}
-        {/* Pastikan props recipeId terisi dengan benar */}
         <CommentsSection recipeId={recipe.id} currentUser={currentUser} />
 
       </div>

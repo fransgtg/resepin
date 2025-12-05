@@ -1,0 +1,29 @@
+/* src/components/AuthForm.css */
+.auth-overlay { animation: fadeIn 0.4s ease-out; }
+
+.auth-card {
+  background: white; width: 100%; max-width: 600px; padding: 50px;
+  border-radius: 30px; box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+  position: relative; text-align: center;
+}
+
+.auth-header h2 {
+  margin: 0 0 10px 0; color: #151e32; font-family: 'Poppins', sans-serif;
+  font-weight: 700; font-size: 1.8rem;
+}
+
+.form-group input {
+  width: 100%; padding: 16px 20px; border: 2px solid #eee;
+  border-radius: 15px; font-size: 1rem; margin-bottom: 15px;
+  font-family: 'Poppins', sans-serif; transition: border-color 0.3s;
+}
+.form-group input:focus { border-color: #f97316; outline: none; }
+
+button[type="submit"] {
+  background-color: #f97316; color: white; padding: 15px; border: none;
+  border-radius: 50px; font-weight: bold; width: 100%; cursor: pointer;
+  margin-top: 10px; font-size: 1.1rem;
+}
+button[type="submit"]:hover { background-color: #ea580c; transform: translateY(-2px); }
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }

@@ -1,4 +1,5 @@
 import React from 'react';
+import './RecipeGrid.css';
 
 const RecipeCard = ({ title, img, category, loves, onClick }) => {
   return (

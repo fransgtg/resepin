@@ -1,0 +1,59 @@
+/* src/components/NavBar.css */
+.navbar {
+  background-color: #151e32; /* Biru Gelap */
+  width: 100%; height: 80px; padding: 0 5%;
+  display: flex; align-items: center; justify-content: space-between;
+  color: white; position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+.navbar-left { flex: 1; display: flex; align-items: center; }
+
+.logo {
+  font-family: 'Lato', sans-serif; font-weight: 900; font-size: 2rem;
+  color: #ffffff; font-style: italic; letter-spacing: -0.5px; cursor: pointer;
+}
+
+.navbar-center { flex: 2; display: flex; justify-content: center; }
+.search-container { position: relative; width: 100%; max-width: 600px; }
+
+.search-input {
+  width: 100%; padding: 12px 50px 12px 25px; border-radius: 50px;
+  border: none; outline: none; font-size: 0.95rem; font-family: 'Poppins', sans-serif;
+}
+
+.search-btn {
+  position: absolute; right: 15px; top: 50%; transform: translateY(-50%);
+  background: none; border: none; cursor: pointer; color: #6b7280;
+}
+
+.navbar-right { flex: 1; display: flex; justify-content: flex-end; align-items: center; gap: 30px; }
+
+.nav-link {
+  color: #e2e8f0; text-decoration: none; font-weight: 500; font-size: 1rem;
+  cursor: pointer; transition: color 0.2s; white-space: nowrap;
+}
+.nav-link:hover { color: #ffffff; }
+
+.login-btn {
+  background-color: #222b40; color: white; padding: 10px 24px;
+  border-radius: 20px; font-weight: 500; border: 1px solid #303b55; transition: all 0.3s;
+}
+.login-btn:hover { background-color: #2d3748; transform: translateY(-1px); }
+
+.btn-logout {
+  background-color: #ef4444 !important; 
+  border-color: #dc2626 !important;     
+  color: white !important;
+}
+
+.btn-logout:hover {
+  background-color: #dc2626 !important; 
+  border-color: #b91c1c !important;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4); 
+}
+
+@media (max-width: 900px) {
+  .navbar { flex-direction: column; height: auto; padding: 20px; gap: 15px; }
+  .navbar-left, .navbar-center, .navbar-right { width: 100%; justify-content: center; }
+}

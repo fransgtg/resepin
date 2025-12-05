@@ -1,0 +1,30 @@
+/* src/components/FilterBar.css */
+.filters {
+  position: relative; display: flex; gap: 15px; margin-bottom: 30px; align-items: center;
+}
+
+.btn-filter {
+  background-color: #f97316; color: white; border: none; padding: 10px 24px;
+  border-radius: 50px; font-weight: 600; cursor: pointer;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
+  display: flex; align-items: center; gap: 12px; transition: all 0.2s;
+  min-width: 180px; justify-content: space-between;
+}
+.btn-filter:hover, .btn-filter.active { background-color: #ea580c; transform: translateY(-2px); }
+
+.filter-dropdown {
+  position: absolute; top: 115%; left: 0; background-color: white;
+  min-width: 220px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  padding: 10px; z-index: 50; border: 1px solid #eee;
+  display: flex; flex-direction: column; gap: 5px;
+}
+.filter-item {
+  padding: 12px 15px; border-radius: 10px; font-size: 0.95rem; color: #333; cursor: pointer;
+}
+.filter-item:hover { background-color: #f3f4f6; color: #f97316; }
+.filter-item.active { background-color: #fff7ed; color: #f97316; font-weight: 700; }
+
+@media (max-width: 900px) {
+  .filters { justify-content: center; }
+  .filter-dropdown { left: 50%; transform: translateX(-50%); width: 90%; }
+}

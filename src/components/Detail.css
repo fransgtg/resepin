@@ -1,0 +1,39 @@
+/* src/components/Detail.css */
+.article-container, .recipe-detail-container {
+  padding-top: 20px; animation: fadeIn 0.5s ease-in-out;
+  max-width: 1000px; margin: 0 auto;
+}
+
+.detail-header, .article-card-large {
+  display: flex; gap: 40px; background-color: #FEFCE8; padding: 40px;
+  border-radius: 30px; align-items: flex-start;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+}
+
+.detail-img-wrapper img, .article-image img {
+  width: 100%; border-radius: 20px; object-fit: cover;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.detail-title-info h1, .article-title {
+  font-family: 'Poppins', sans-serif; font-weight: 700; color: #151e32;
+  font-size: 3rem; margin: 0 0 15px 0;
+}
+
+/* Kartu Konten (Bahan & Langkah) */
+.detail-content-card {
+  background-color: #FEFCE8; border-radius: 30px; padding: 50px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.05); margin-top: 20px;
+}
+.detail-content-card h3 { color: #151e32; font-weight: 700; margin-bottom: 15px; }
+
+.badge {
+  padding: 8px 20px; border-radius: 30px; color: white; font-weight: 600;
+  font-size: 0.9rem; box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+.badge.orange { background-color: #F97316; }
+
+@media (max-width: 900px) {
+  .detail-header, .article-card-large { flex-direction: column; text-align: center; }
+  .detail-img-wrapper, .article-image { width: 100%; }
+}

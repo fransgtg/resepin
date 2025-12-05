@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import './AuthForm.css';
 import { supabase } from '../supabaseClient';
 
 const AuthForm = ({ onCancel, onLoginSuccess }) => {
