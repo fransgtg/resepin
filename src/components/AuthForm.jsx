@@ -10,7 +10,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
   // Data Form
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [fullName, setFullName] = useState(''); // Khusus register
+  const [fullName, setFullName] = useState(''); 
 
   // --- LOGIKA BACKEND (SUPABASE) ---
   const handleSubmit = async (e) => {
@@ -25,14 +25,13 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
           email: email,
           password: password,
           options: {
-            data: { full_name: fullName }, // Simpan nama asli
+            data: { full_name: fullName },
           },
         });
         if (error) throw error;
         
         alert('Akun berhasil dibuat! Anda otomatis login.');
         
-        // Kirim data user ke App.jsx
         if (data.user) {
           onLoginSuccess({
             id: data.user.id,
@@ -49,7 +48,6 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
         });
         if (error) throw error;
 
-        // Kirim data user ke App.jsx
         onLoginSuccess({
           id: data.user.id,
           email: data.user.email,
@@ -57,7 +55,6 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
         });
       }
     } catch (error) {
-      // Terjemahkan error umum agar enak dibaca
       let msg = error.message;
       if (msg === 'Invalid login credentials') msg = 'Email atau password salah.';
       if (msg === 'User already registered') msg = 'Email ini sudah terdaftar.';
@@ -68,38 +65,26 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
   };
 
   return (
-    <div className="auth-overlay" style={{
-      position: 'fixed', top: 0, left: 0, width: '100%', height: '100%',
-      backgroundColor: 'rgba(0,0,0,0.5)', zIndex: 2000,
-      display: 'flex', justifyContent: 'center', alignItems: 'center',
-      backdropFilter: 'blur(3px)'
-    }}>
-      <div className="auth-card" style={{
-        backgroundColor: 'white', padding: '40px', borderRadius: '20px',
-        width: '90%', maxWidth: '400px', textAlign: 'center',
-        boxShadow: '0 10px 25px rgba(0,0,0,0.2)'
-      }}>
+    <div className="auth-overlay">
+      <div className="auth-card">
         
         {/* JUDUL */}
-        <h2 style={{ color: '#151e32', marginBottom: '10px', fontFamily: 'Poppins, sans-serif' }}>
+        <h2 className="auth-title">
           {isRegister ? 'Buat Akun' : 'Selamat Datang'}
         </h2>
-        <p style={{ color: '#888', marginBottom: '25px', fontSize: '0.9rem' }}>
+        <p className="auth-subtitle">
           {isRegister ? 'Gabung untuk akses resep lengkap.' : 'Silakan login untuk melanjutkan.'}
         </p>
 
         {/* PESAN ERROR */}
         {errorMsg && (
-          <div style={{ 
-            backgroundColor: '#fee2e2', color: '#b91c1c', 
-            padding: '10px', borderRadius: '10px', marginBottom: '20px', fontSize: '0.9rem' 
-          }}>
+          <div className="auth-error">
             {errorMsg}
           </div>
         )}
 
         {/* FORM INPUT */}
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+        <form onSubmit={handleSubmit} className="auth-form">
           
           {/* Input Nama (Hanya muncul saat Register) */}
           {isRegister && (
@@ -109,10 +94,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
               value={fullName}
               onChange={(e) => setFullName(e.target.value)}
               required
-              style={{ 
-                padding: '15px', borderRadius: '12px', border: '1px solid #ddd',
-                backgroundColor: '#f9f9f9', fontSize: '1rem'
-              }}
+              className="auth-input"
             />
           )}
 
@@ -122,10 +104,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             required
-            style={{ 
-              padding: '15px', borderRadius: '12px', border: '1px solid #ddd',
-              backgroundColor: '#f9f9f9', fontSize: '1rem'
-            }}
+            className="auth-input"
           />
           
           <input 
@@ -135,33 +114,24 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
             onChange={(e) => setPassword(e.target.value)}
             required
             minLength={6}
-            style={{ 
-              padding: '15px', borderRadius: '12px', border: '1px solid #ddd',
-              backgroundColor: '#f9f9f9', fontSize: '1rem'
-            }}
+            className="auth-input"
           />
 
           <button 
             type="submit" 
             disabled={loading}
-            style={{
-              marginTop: '10px',
-              backgroundColor: '#f97316', color: 'white', padding: '15px',
-              border: 'none', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer',
-              fontSize: '1rem', transition: '0.3s',
-              opacity: loading ? 0.7 : 1
-            }}
+            className="auth-btn-submit"
           >
             {loading ? 'Memproses...' : (isRegister ? 'Daftar Sekarang' : 'Masuk')}
           </button>
         </form>
 
         {/* FOOTER / TOGGLE */}
-        <p style={{ marginTop: '25px', fontSize: '0.9rem', color: '#666' }}>
+        <p className="auth-footer">
           {isRegister ? 'Sudah punya akun? ' : 'Belum punya akun? '}
           <span 
             onClick={() => { setIsRegister(!isRegister); setErrorMsg(''); }}
-            style={{ color: '#f97316', fontWeight: 'bold', cursor: 'pointer', textDecoration: 'underline' }}
+            className="auth-link"
           >
             {isRegister ? 'Login' : 'Daftar'}
           </span>
@@ -169,10 +139,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
 
         <button 
           onClick={onCancel}
-          style={{
-            marginTop: '10px', background: 'none', border: 'none', 
-            color: '#999', cursor: 'pointer', fontSize: '0.9rem'
-          }}
+          className="auth-btn-cancel"
         >
           Nanti Saja
         </button>

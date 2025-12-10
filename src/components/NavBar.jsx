@@ -37,8 +37,8 @@ const NavBar = ({
         <span className="nav-link" onClick={onRecipeClick}>Resep</span>
         
         {currentUser ? (
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-            <span style={{ fontSize: '0.9rem', color: '#e2e8f0' }}>
+          <div className="user-menu">
+            <span className="user-greeting">
               Hi, {currentUser.name ? currentUser.name.split(' ')[0] : 'User'}
             </span>
             <button 

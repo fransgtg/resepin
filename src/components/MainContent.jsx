@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-// Import components for display
+// Import semua komponen
 import Hero from './Hero';
 import RecipeDetail from './RecipeDetail';
 import AuthForm from './AuthForm';
@@ -9,7 +9,6 @@ import ArticleList from './ArticleList';
 import FilterBar from './FilterBar';
 import RecipeGrid from './RecipeGrid';
 import LockedContent from './LockedContent';
-// Import Add Recipe Form
 import AddRecipeForm from './AddRecipeForm';
 
 const MainContent = ({ 
@@ -25,10 +24,10 @@ const MainContent = ({
   // State untuk menyimpan status Admin
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Helper: List categories for dropdown filter
+  // Helper: List kategori untuk filter
   const categoriesList = ['All', ...new Set(allRecipes.map(r => r.category))];
 
-  // --- CEK ROLE ADMIN ---
+  // --- [ADMIN CHECK] Cek apakah user adalah Admin ---
   useEffect(() => {
     const checkUserRole = async () => {
       if (currentUser) {
@@ -39,7 +38,7 @@ const MainContent = ({
           .eq('id', currentUser.id)
           .single();
         
-        // Jika tidak error dan role-nya 'admin', set isAdmin jadi true
+        // Jika role-nya 'admin', set isAdmin jadi true
         if (!error && data && data.role === 'admin') {
           setIsAdmin(true);
         } else {
@@ -51,7 +50,7 @@ const MainContent = ({
     };
 
     checkUserRole();
-  }, [currentUser]); // Cek ulang setiap kali user login/logout
+  }, [currentUser]); 
 
   // 1. LOGIN View
   if (nav.isLoginPage) {
@@ -67,9 +66,9 @@ const MainContent = ({
     );
   }
 
-  // 3. ADD RECIPE View (Form Page)
+  // 3. ADD RECIPE View (Halaman Tambah Resep)
   if (nav.isAddRecipePage) {
-    // Keamanan Ganda: Jika bukan admin, tendang ke Home
+    // Keamanan Frontend: Jika bukan admin, kembalikan ke Home
     if (!isAdmin) {
       alert("Maaf, hanya Admin yang boleh menambah resep.");
       nav.goHome();
@@ -81,7 +80,7 @@ const MainContent = ({
         currentUser={currentUser} 
         onCancel={nav.goHome} 
         onSuccess={async () => {
-          // Panggil refresh data dulu agar saat kembali ke Home, resep baru sudah ada
+          // Refresh data agar resep baru muncul di Grid
           if (onRefreshRecipes) await onRefreshRecipes(); 
           nav.goHome();
         }} 
@@ -91,21 +90,29 @@ const MainContent = ({
     );
   }
 
-  // 4. RECIPE DETAIL View
+  // 4. RECIPE DETAIL View (Detail Resep & Komentar)
   if (nav.selectedRecipe) {
     return (
       <RecipeDetail 
         recipe={nav.selectedRecipe} 
         onClose={nav.handleCloseDetail} 
         currentUser={currentUser} 
-        // Logika Hapus yang Lebih Aman
+        
+        // [PENTING] Kirim status Admin ke Detail agar tombol hapus muncul
+        isAdmin={isAdmin} 
+
+        // [DELETE LOGIC] Fungsi Hapus Resep Khusus Admin
         onDelete={() => {
           const recipeId = nav.selectedRecipe.id;
           
-          if (window.confirm(`Yakin ingin menghapus resep "${nav.selectedRecipe.title}"?`)) {
+          // Konfirmasi ekstra untuk Admin
+          if (window.confirm(`[ADMIN] Yakin ingin MENGHAPUS resep "${nav.selectedRecipe.title}" secara permanen?`)) {
+            
+            // Panggil fungsi hapus dari props (useRecipes hook)
             onDeleteRecipe(recipeId).then((success) => {
               if (success) {
-                nav.handleCloseDetail(); 
+                alert("Resep berhasil dihapus.");
+                nav.handleCloseDetail(); // Tutup modal jika sukses
               }
             });
           }
@@ -128,7 +135,6 @@ const MainContent = ({
         onFilterClick={nav.handleFilterClick}
         recipeSectionRef={nav.recipeSectionRef}
         
-        // Sorting Props
         sortOption={nav.sortOption}
         showSortMenu={nav.showSortMenu}
         setShowSortMenu={nav.setShowSortMenu}
@@ -143,7 +149,7 @@ const MainContent = ({
           activeCategory={nav.activeCategory}
           onRecipeClick={nav.handleOpenRecipe}
           
-          // [PENTING] Tombol "+ Tambah" hanya aktif jika user adalah ADMIN
+          // Tombol "+ Tambah" hanya aktif jika user adalah ADMIN
           onAddRecipe={isAdmin ? nav.goToAddRecipe : null} 
         />
       ) : (

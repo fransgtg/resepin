@@ -1,0 +1,169 @@
+/* src/components/CommentsSection.css */
+
+/* Container Utama */
+.comments-section {
+  margin-top: 40px;
+  padding-top: 20px;
+  border-top: 2px dashed #eee;
+}
+
+.comments-title {
+  color: #151e32;
+  margin-bottom: 20px;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Form Komentar */
+.comments-form {
+  margin-bottom: 30px;
+}
+
+.comments-textarea {
+  width: 100%;
+  padding: 15px;
+  border-radius: 15px;
+  border: 2px solid #eee;
+  font-family: 'Poppins', sans-serif;
+  font-size: 1rem;
+  resize: vertical; /* Biarkan user mengubah tinggi text area */
+  box-sizing: border-box; /* Penting agar padding tidak melebarkan elemen */
+}
+
+.comments-textarea:focus {
+  outline: none;
+  border-color: #f97316;
+}
+
+.comments-submit-btn {
+  margin-top: 10px;
+  background-color: #f97316;
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s;
+}
+
+.comments-submit-btn:hover:not(:disabled) {
+  background-color: #ea580c;
+}
+
+.comments-submit-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Notifikasi Login */
+.comments-login-notice {
+  padding: 15px;
+  background-color: #fff3cd;
+  color: #856404;
+  border-radius: 10px;
+  text-align: center;
+  margin-bottom: 20px;
+  border: 1px solid #ffeeba;
+}
+
+/* List Container */
+.comments-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Kartu Komentar Individual */
+.comment-card {
+  background-color: white;
+  padding: 20px;
+  border-radius: 15px;
+  border: 1px solid #f0f0f0;
+}
+
+.comment-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+/* Info User (Avatar & Nama) */
+.comment-user-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 5px;
+}
+
+.comment-avatar {
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 0.9rem;
+  background-color: #eee; /* Default bg */
+  color: #666; /* Default text */
+}
+
+/* Style khusus jika user adalah pemilik komentar */
+.comment-avatar.is-owner {
+  background-color: #f97316;
+  color: white;
+}
+
+.comment-username {
+  color: #151e32;
+  font-weight: bold;
+}
+
+.comment-date {
+  font-size: 0.75rem;
+  color: #999;
+  margin-left: 45px; /* Sesuai lebar avatar + gap */
+}
+
+/* Tombol Aksi (Edit/Hapus) */
+.comment-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.btn-action {
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 0.85rem;
+  padding: 0;
+  text-decoration: underline;
+}
+
+.btn-edit { color: #007bff; }
+.btn-delete { color: #dc3545; }
+.btn-save { color: #28a745; text-decoration: none; font-weight: bold;}
+.btn-cancel { color: #6c757d; text-decoration: none; }
+
+/* Konten Komentar */
+.comment-content-area {
+  margin-top: 10px;
+  padding-left: 45px; /* Indentasi agar sejajar dengan nama */
+}
+
+.comment-text {
+  margin: 0;
+  color: #555;
+  line-height: 1.5;
+}
+
+/* Textarea saat Mode Edit */
+.comment-edit-textarea {
+  width: 100%;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  font-family: inherit;
+  resize: vertical;
+  box-sizing: border-box;
+}

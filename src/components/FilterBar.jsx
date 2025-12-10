@@ -1,5 +1,5 @@
 import React from 'react';
-import './FilterBar.css'; // Pastikan CSS ini ada
+import './FilterBar.css'; 
 
 const FilterIcon = () => (
   <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -20,7 +20,6 @@ const FilterBar = ({
   categoriesList, 
   onFilterClick,
   recipeSectionRef,
-  // [BARU] Props untuk Sort
   sortOption,
   showSortMenu,
   setShowSortMenu,
@@ -38,14 +37,13 @@ const FilterBar = ({
   };
 
   return (
-    <div className="filters" ref={recipeSectionRef} style={{ position: 'relative', display: 'flex', gap: '15px', flexWrap: 'wrap' }}>
+    <div className="filters" ref={recipeSectionRef}>
       
       {/* 1. BUTTON FILTER KATEGORI */}
-      <div style={{ position: 'relative' }}>
+      <div className="filter-group">
         <button 
-          className={`btn-filter ${showFilterMenu ? 'active' : ''}`}
+          className={`btn-filter btn-filter-category ${showFilterMenu ? 'active' : ''}`}
           onClick={() => { setShowFilterMenu(!showFilterMenu); setShowSortMenu(false); }}
-          style={{ minWidth: '200px', justifyContent: 'space-between' }}
         >
           {activeCategory === 'All' ? 'Filter Kategori' : activeCategory}
           <FilterIcon />
@@ -66,25 +64,18 @@ const FilterBar = ({
         )}
       </div>
 
-      {/* 2. [BARU] BUTTON SORTING */}
-      <div style={{ position: 'relative' }}>
+      {/* 2. BUTTON SORTING */}
+      <div className="filter-group">
         <button 
-          className={`btn-filter ${showSortMenu ? 'active' : ''}`}
+          className={`btn-filter btn-filter-outline ${showSortMenu ? 'active' : ''}`}
           onClick={() => { setShowSortMenu(!showSortMenu); setShowFilterMenu(false); }}
-          style={{ 
-            minWidth: '160px', 
-            justifyContent: 'space-between',
-            backgroundColor: 'white', 
-            color: '#f97316', 
-            border: '2px solid #f97316' 
-          }}
         >
           {getSortLabel(sortOption)}
           <SortIcon />
         </button>
 
         {showSortMenu && (
-          <div className="filter-dropdown" style={{ minWidth: '160px' }}>
+          <div className="filter-dropdown filter-dropdown-sort">
             <div className={`filter-item ${sortOption === 'newest' ? 'active' : ''}`} onClick={() => onSortClick('newest')}>
               Terbaru (Default)
             </div>
