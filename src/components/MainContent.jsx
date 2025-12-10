@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
+import { supabase } from '../supabaseClient';
 
 // Import components for display
 import Hero from './Hero';
@@ -17,12 +18,40 @@ const MainContent = ({
   loadingData, 
   displayedRecipes, 
   allRecipes, 
-  onRefreshRecipes, // [IMPORTANT] Receive refresh function
-  onDeleteRecipe    // [IMPORTANT] Receive delete function
+  onRefreshRecipes, 
+  onDeleteRecipe    
 }) => {
   
+  // State untuk menyimpan status Admin
+  const [isAdmin, setIsAdmin] = useState(false);
+
   // Helper: List categories for dropdown filter
   const categoriesList = ['All', ...new Set(allRecipes.map(r => r.category))];
+
+  // --- CEK ROLE ADMIN ---
+  useEffect(() => {
+    const checkUserRole = async () => {
+      if (currentUser) {
+        // Ambil data role dari tabel 'profiles' berdasarkan ID user yang login
+        const { data, error } = await supabase
+          .from('profiles')
+          .select('role')
+          .eq('id', currentUser.id)
+          .single();
+        
+        // Jika tidak error dan role-nya 'admin', set isAdmin jadi true
+        if (!error && data && data.role === 'admin') {
+          setIsAdmin(true);
+        } else {
+          setIsAdmin(false);
+        }
+      } else {
+        setIsAdmin(false);
+      }
+    };
+
+    checkUserRole();
+  }, [currentUser]); // Cek ulang setiap kali user login/logout
 
   // 1. LOGIN View
   if (nav.isLoginPage) {
@@ -40,15 +69,22 @@ const MainContent = ({
 
   // 3. ADD RECIPE View (Form Page)
   if (nav.isAddRecipePage) {
+    // Keamanan Ganda: Jika bukan admin, tendang ke Home
+    if (!isAdmin) {
+      alert("Maaf, hanya Admin yang boleh menambah resep.");
+      nav.goHome();
+      return null;
+    }
+
     return currentUser ? (
       <AddRecipeForm 
-        onCancel={nav.goHome} 
-        onSuccess={() => {
-          nav.goHome();
-          // Call refresh function so the latest data appears!
-          if (onRefreshRecipes) onRefreshRecipes(); 
-        }} 
         currentUser={currentUser} 
+        onCancel={nav.goHome} 
+        onSuccess={async () => {
+          // Panggil refresh data dulu agar saat kembali ke Home, resep baru sudah ada
+          if (onRefreshRecipes) await onRefreshRecipes(); 
+          nav.goHome();
+        }} 
       />
     ) : (
       <AuthForm onCancel={nav.goHome} onLoginSuccess={() => nav.setIsLoginPage(false)} />
@@ -62,12 +98,15 @@ const MainContent = ({
         recipe={nav.selectedRecipe} 
         onClose={nav.handleCloseDetail} 
         currentUser={currentUser} 
-        // Pass delete function to RecipeDetail
+        // Logika Hapus yang Lebih Aman
         onDelete={() => {
-          if (window.confirm("Apakah Anda yakin ingin menghapus resep ini?")) {
-            // Delete recipe based on ID
-            onDeleteRecipe(nav.selectedRecipe.id).then((success) => {
-              if (success) nav.handleCloseDetail(); // Close detail if delete successful
+          const recipeId = nav.selectedRecipe.id;
+          
+          if (window.confirm(`Yakin ingin menghapus resep "${nav.selectedRecipe.title}"?`)) {
+            onDeleteRecipe(recipeId).then((success) => {
+              if (success) {
+                nav.handleCloseDetail(); 
+              }
             });
           }
         }}
@@ -80,7 +119,7 @@ const MainContent = ({
     <>
       <Hero />
       
-      {/* Send sorting props to FilterBar */}
+      {/* Filter & Sort Bar */}
       <FilterBar 
         activeCategory={nav.activeCategory}
         showFilterMenu={nav.showFilterMenu}
@@ -89,7 +128,7 @@ const MainContent = ({
         onFilterClick={nav.handleFilterClick}
         recipeSectionRef={nav.recipeSectionRef}
         
-        // New Sort Props
+        // Sorting Props
         sortOption={nav.sortOption}
         showSortMenu={nav.showSortMenu}
         setShowSortMenu={nav.setShowSortMenu}
@@ -103,8 +142,9 @@ const MainContent = ({
           searchQuery={nav.searchQuery}
           activeCategory={nav.activeCategory}
           onRecipeClick={nav.handleOpenRecipe}
-          // Connect navigation function to Grid so the "+" card works
-          onAddRecipe={nav.goToAddRecipe} 
+          
+          // [PENTING] Tombol "+ Tambah" hanya aktif jika user adalah ADMIN
+          onAddRecipe={isAdmin ? nav.goToAddRecipe : null} 
         />
       ) : (
         <LockedContent onLoginClick={() => nav.setIsLoginPage(true)} />

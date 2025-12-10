@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import './AddRecipeForm.css'; // [PENTING] Import CSS baru
 
 const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
   const [loading, setLoading] = useState(false);
@@ -7,8 +8,8 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
   // State Form
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Olahan Ayam');
-  const [sourceUrl, setSourceUrl] = useState(''); // Link Sumber
-  const [imgUrl, setImgUrl] = useState('');       // [BARU] Link Gambar
+  const [sourceUrl, setSourceUrl] = useState('');
+  const [imgUrl, setImgUrl] = useState('');       
   const [ingredientsText, setIngredientsText] = useState('');
   const [stepsText, setStepsText] = useState('');
 
@@ -21,101 +22,105 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!currentUser) return alert("Silakan login dulu!");
-    
     setLoading(true);
 
-    const formattedIngredients = ingredientsText.split('\n').filter(line => line.trim() !== '').join('--');
-    const formattedSteps = stepsText.split('\n').filter(line => line.trim() !== '').join('--');
+    const formattedIngredients = ingredientsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
+    const formattedSteps = stepsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
 
     const newRecipe = {
-      title: title,
-      category: category,
-      url: sourceUrl,
-      image_url: imgUrl, // [BARU] Simpan URL gambar ke kolom image_url
+      title: title.trim(),
+      category,
+      url: sourceUrl.trim(),
+      image_url: imgUrl.trim(),
       ingredients: formattedIngredients,
       steps: formattedSteps,
-      loves: 0,
       user_id: currentUser.id
     };
 
     const { error } = await supabase.from('recipes').insert([newRecipe]);
-
     setLoading(false);
 
     if (error) {
-      alert('Gagal menyimpan resep: ' + error.message);
+      alert('Gagal: ' + error.message);
     } else {
-      alert('Resep berhasil diterbitkan!');
-      onSuccess();
+      alert('Resep Berhasil Diterbitkan!');
+      if (onSuccess) onSuccess();
     }
   };
 
   return (
-    <div style={{
-      display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '80vh', padding: '40px 20px', animation: 'fadeIn 0.5s ease-out'
-    }}>
-      <div className="auth-card" style={{ 
-        width: '100%', maxWidth: '700px', textAlign: 'left', position: 'relative', backgroundColor: 'white', borderRadius: '30px', padding: '50px', boxShadow: '0 20px 50px rgba(0,0,0,0.1)'
-      }}>
+    <div className="add-recipe-overlay">
+      <div className="add-recipe-card">
         
-        <button onClick={onCancel} style={{ position: 'absolute', top: '25px', right: '30px', background: 'none', border: 'none', fontSize: '2rem', cursor: 'pointer', color: '#999' }}>&times;</button>
-        
-        <div style={{ textAlign: 'center', marginBottom: '40px' }}>
-          <h2 style={{ color: '#151e32', fontSize: '2rem', marginBottom: '10px', fontFamily: 'Poppins, sans-serif' }}>Tulis Resep Baru</h2>
-          <p style={{ color: '#666' }}>Bagikan resep lezatmu sesuai format standar.</p>
+        {/* 1. Header (Tetap Diam) */}
+        <div className="form-header">
+          <h2 className="form-title">Tulis Resep Baru</h2>
+          <button onClick={onCancel} className="btn-close">&times;</button>
         </div>
 
-        <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          <div className="form-group">
-            <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Judul Resep</label>
-            <input type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Contoh: Ayam Woku Manado" required style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontSize: '1rem' }} />
-          </div>
+        {/* 2. Konten Scrollable */}
+        <div className="form-scroll-content">
+          <form id="recipeForm" onSubmit={handleSubmit}>
+            <div className="form-grid">
+              
+              {/* KOLOM KIRI (Info Dasar) */}
+              <div className="left-column">
+                <div className="form-group">
+                  <label className="form-label">Judul Resep</label>
+                  <input className="form-input" type="text" value={title} onChange={e => setTitle(e.target.value)} placeholder="Contoh: Ayam Woku Manado" required />
+                </div>
 
-          <div style={{ display: 'flex', gap: '20px', flexWrap: 'wrap' }}>
-            <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-              <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Kategori</label>
-              <select value={category} onChange={e => setCategory(e.target.value)} style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontSize: '1rem', backgroundColor: 'white' }}>
-                {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
-              </select>
-            </div>
-            
-            <div className="form-group" style={{ flex: 1, minWidth: '200px' }}>
-              <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Link Sumber (URL)</label>
-              <input type="text" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="https://sumber-resep.com/..." style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontSize: '1rem' }} />
-            </div>
-          </div>
+                <div className="form-group">
+                  <label className="form-label">Kategori</label>
+                  <select className="form-select" value={category} onChange={e => setCategory(e.target.value)}>
+                    {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
 
-          {/* [BARU] Input Link Gambar */}
-          <div className="form-group">
-            <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Link Gambar (URL)</label>
-            <input 
-              type="text" 
-              value={imgUrl} 
-              onChange={e => setImgUrl(e.target.value)} 
-              placeholder="https://images.unsplash.com/..." 
-              style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontSize: '1rem' }} 
-            />
-            {imgUrl && (
-              <div style={{ marginTop: '10px', width: '100%', height: '200px', borderRadius: '15px', overflow: 'hidden', border: '2px dashed #eee' }}>
-                <img src={imgUrl} alt="Preview" style={{ width: '100%', height: '100%', objectFit: 'cover' }} onError={(e) => e.target.style.display = 'none'} />
+                <div className="form-group">
+                  <label className="form-label">Link Gambar (URL)</label>
+                  <input className="form-input" type="text" value={imgUrl} onChange={e => setImgUrl(e.target.value)} placeholder="https://..." />
+                  
+                  {/* Preview Gambar Kecil */}
+                  <div className="image-preview-box">
+                    {imgUrl ? (
+                      <img src={imgUrl} alt="Preview" onError={(e) => e.target.style.display = 'none'} />
+                    ) : (
+                      <span>Preview gambar akan muncul di sini</span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="form-group">
+                  <label className="form-label">Sumber Referensi (Opsional)</label>
+                  <input className="form-input" type="text" value={sourceUrl} onChange={e => setSourceUrl(e.target.value)} placeholder="https://sumber-resep.com" />
+                </div>
               </div>
-            )}
-          </div>
 
-          <div className="form-group">
-            <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Bahan-bahan (Tekan Enter untuk baris baru)</label>
-            <textarea rows="6" value={ingredientsText} onChange={e => setIngredientsText(e.target.value)} required style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontFamily: 'Poppins', fontSize: '1rem', resize: 'vertical' }} />
-          </div>
+              {/* KOLOM KANAN (Teks Panjang) */}
+              <div className="right-column">
+                <div className="form-group">
+                  <label className="form-label">Bahan-bahan (Pisahkan dengan Enter)</label>
+                  <textarea className="form-textarea" value={ingredientsText} onChange={e => setIngredientsText(e.target.value)} required placeholder="- 500gr Ayam&#10;- 2 siung Bawang Putih&#10;- Garam secukupnya" />
+                </div>
 
-          <div className="form-group">
-            <label style={{ fontWeight: '600', marginBottom: '8px', display: 'block', color: '#151e32' }}>Cara Membuat (Tekan Enter untuk baris baru)</label>
-            <textarea rows="6" value={stepsText} onChange={e => setStepsText(e.target.value)} required style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontFamily: 'Poppins', fontSize: '1rem', resize: 'vertical' }} />
-          </div>
+                <div className="form-group">
+                  <label className="form-label">Cara Membuat (Pisahkan dengan Enter)</label>
+                  <textarea className="form-textarea" value={stepsText} onChange={e => setStepsText(e.target.value)} required placeholder="1. Cuci bersih ayam...&#10;2. Tumis bumbu halus...&#10;3. Masukkan ayam..." />
+                </div>
+              </div>
 
-          <button type="submit" disabled={loading} style={{ backgroundColor: '#f97316', color: 'white', padding: '18px', border: 'none', borderRadius: '50px', fontWeight: 'bold', cursor: 'pointer', fontSize: '1.1rem', marginTop: '20px', transition: '0.3s', boxShadow: '0 4px 15px rgba(249, 115, 22, 0.4)', opacity: loading ? 0.7 : 1 }}>
-            {loading ? 'Menyimpan...' : 'Simpan Resep'}
+            </div>
+          </form>
+        </div>
+
+        {/* 3. Footer (Tombol Simpan) */}
+        <div className="form-footer">
+          <button type="submit" form="recipeForm" className="btn-submit" disabled={loading}>
+            {loading ? 'Sedang Menyimpan...' : 'Terbitkan Resep ✨'}
           </button>
-        </form>
+        </div>
+
       </div>
     </div>
   );

@@ -1,168 +1,192 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-const CommentsSection = ({ recipeId, currentUser }) => {
+const CommentsSection = ({ recipeId, currentUser, isAdmin }) => {
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState('');
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  
+  // State Edit
+  const [editingId, setEditingId] = useState(null);
+  const [editText, setEditText] = useState('');
 
-  // --- 1. FETCH KOMENTAR (Saat resep dibuka) ---
-  useEffect(() => {
-    const fetchComments = async () => {
-      setLoading(true);
-      // Ambil komentar yang ID resepnya cocok dengan resep yang sedang dibuka
-      const { data, error } = await supabase
-        .from('comments')
-        .select('*')
-        .eq('recipe_id', recipeId) 
-        .order('created_at', { ascending: false }); // Urutkan dari yang terbaru
+  // Helper ID
+  const getCleanId = (id) => {
+    if (!id) return null;
+    const strId = String(id);
+    if (strId.includes('dataset')) return null;
+    return parseInt(strId.replace('db-', ''));
+  };
+  const cleanRecipeId = getCleanId(recipeId);
 
-      if (error) {
-        console.error('Error fetching comments:', error);
-      } else {
-        setComments(data);
-      }
-      setLoading(false);
-    };
+  // Helper Tanggal
+  const formatDate = (dateString) => {
+    return new Date(dateString).toLocaleDateString('id-ID', {
+      day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+    });
+  };
 
-    if (recipeId) fetchComments();
-  }, [recipeId]); 
+  const currentUserName = currentUser?.name || currentUser?.email?.split('@')[0];
 
-  // --- 2. KIRIM KOMENTAR ---
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    if (!newComment.trim()) return;
-
-    setSubmitting(true);
-
-    // Tentukan nama pengirim (Nama -> Email -> 'Pengguna')
-    // Ini mencegah error jika user tidak punya properti 'name'
-    const senderName = currentUser?.name || currentUser?.email?.split('@')[0] || 'Pengguna';
-
-    const commentData = {
-      recipe_id: recipeId,
-      user_name: senderName, 
-      content: newComment
-    };
-
-    // Simpan ke database Supabase
+  // --- FETCH ---
+  const fetchComments = async () => {
+    if (!cleanRecipeId) { setLoading(false); return; }
+    
+    setLoading(true);
     const { data, error } = await supabase
       .from('comments')
-      .insert([commentData])
-      .select();
+      .select('*')
+      .eq('recipe_id', cleanRecipeId)
+      .order('created_at', { ascending: false }); // Yang terbaru/diedit akan di atas
 
-    if (error) {
-      alert('Gagal mengirim komentar: ' + error.message);
-      console.error(error);
+    if (!error) setComments(data || []);
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchComments(); }, [cleanRecipeId]);
+
+  // --- SUBMIT ---
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!newComment.trim() || !currentUser) return;
+    setSubmitting(true);
+
+    const { error } = await supabase.from('comments').insert([{
+      recipe_id: cleanRecipeId,
+      user_name: currentUserName, 
+      content: newComment
+    }]);
+
+    if (!error) {
+      setNewComment('');
+      fetchComments();
     } else {
-      // SUKSES: Tambahkan komentar baru ke daftar TAMPILAN (State)
-      // Supaya langsung muncul tanpa perlu refresh halaman
-      if (data && data.length > 0) {
-        setComments([data[0], ...comments]); 
-        setNewComment(''); // Bersihkan kolom input
-      }
+      alert('Gagal: ' + error.message);
     }
     setSubmitting(false);
+  };
+
+  // --- DELETE ---
+  const handleDelete = async (id) => {
+    if (!window.confirm("Yakin hapus komentar ini?")) return;
+
+    const { error } = await supabase.from('comments').delete().eq('id', id);
+
+    if (!error) {
+      setComments(comments.filter(c => c.id !== id));
+    } else {
+      alert("Gagal hapus: " + error.message);
+    }
+  };
+
+  // --- START EDIT ---
+  const startEditing = (comment) => {
+    setEditingId(comment.id);
+    setEditText(comment.content);
+  };
+
+  // --- SAVE EDIT (UPDATE TANGGAL JUGA) ---
+  const saveEdit = async (id) => {
+    const { error } = await supabase
+      .from('comments')
+      .update({ 
+        content: editText,
+        // [BARU] Update tanggal menjadi waktu sekarang
+        created_at: new Date().toISOString() 
+      })
+      .eq('id', id);
+
+    if (!error) {
+      setEditingId(null);
+      fetchComments(); // Refresh agar urutan dan tanggal terupdate
+    } else {
+      alert("Gagal update: " + error.message);
+    }
   };
 
   return (
     <div className="comments-section" style={{ marginTop: '40px', paddingTop: '20px', borderTop: '2px dashed #eee' }}>
       <h3 style={{ color: '#151e32', marginBottom: '20px' }}>Komentar ({comments.length})</h3>
 
-      {/* --- FORM INPUT --- */}
+      {/* INPUT FORM */}
       {currentUser ? (
         <form onSubmit={handleSubmit} style={{ marginBottom: '30px' }}>
           <textarea
             value={newComment}
             onChange={(e) => setNewComment(e.target.value)}
-            placeholder={`Tulis pendapatmu sebagai ${currentUser.name || currentUser.email}...`}
-            disabled={submitting}
-            style={{
-              width: '100%',
-              padding: '15px',
-              borderRadius: '15px',
-              border: '2px solid #eee',
-              minHeight: '100px',
-              fontFamily: 'Poppins, sans-serif',
-              fontSize: '0.95rem',
-              resize: 'vertical',
-              backgroundColor: submitting ? '#f9f9f9' : 'white'
-            }}
+            placeholder={cleanRecipeId ? "Tulis komentar..." : "Komentar nonaktif."}
+            disabled={submitting || !cleanRecipeId}
+            style={{ width: '100%', padding: '15px', borderRadius: '15px', border: '2px solid #eee', fontFamily: 'Poppins' }}
           />
-          <button 
-            type="submit"
-            disabled={submitting || !newComment.trim()}
-            style={{
-              marginTop: '10px',
-              backgroundColor: submitting ? '#ccc' : '#f97316',
-              color: 'white',
-              border: 'none',
-              padding: '10px 25px',
-              borderRadius: '50px',
-              fontWeight: 'bold',
-              cursor: submitting || !newComment.trim() ? 'not-allowed' : 'pointer',
-              transition: '0.3s'
-            }}
-          >
-            {submitting ? 'Mengirim...' : 'Kirim Komentar'}
+          <button type="submit" disabled={submitting || !newComment.trim()} style={{ marginTop: '10px', backgroundColor: '#f97316', color: 'white', border: 'none', padding: '10px 25px', borderRadius: '50px', cursor: 'pointer' }}>
+            {submitting ? 'Mengirim...' : 'Kirim'}
           </button>
         </form>
       ) : (
-        <div style={{ 
-          backgroundColor: '#fff3cd', 
-          border: '1px solid #ffeeba',
-          color: '#856404',
-          padding: '15px', 
-          borderRadius: '10px', 
-          textAlign: 'center',
-          marginBottom: '30px'
-        }}>
-          Silakan <strong>Login</strong> terlebih dahulu untuk menulis komentar.
-        </div>
+        <div style={{ padding: '15px', backgroundColor: '#fff3cd', borderRadius: '10px', textAlign: 'center', marginBottom: '20px' }}>Login untuk berkomentar.</div>
       )}
 
-      {/* --- DAFTAR KOMENTAR --- */}
-      {loading ? (
-        <p style={{ textAlign: 'center', color: '#999' }}>Memuat komentar...</p>
-      ) : comments.length > 0 ? (
-        <div className="comments-list" style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
-          {comments.map((comment) => (
-            <div key={comment.id} style={{ 
-              backgroundColor: 'white', 
-              padding: '20px', 
-              borderRadius: '15px',
-              boxShadow: '0 4px 10px rgba(0,0,0,0.03)',
-              border: '1px solid #f0f0f0'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px', alignItems: 'center' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                  <div style={{ 
-                    width: '35px', height: '35px', borderRadius: '50%', 
-                    backgroundColor: '#f97316', color: 'white', 
-                    display: 'flex', alignItems: 'center', justifyContent: 'center',
-                    fontWeight: 'bold', fontSize: '0.9rem'
-                  }}>
-                    {comment.user_name ? comment.user_name.charAt(0).toUpperCase() : 'U'}
+      {/* LIST KOMENTAR */}
+      {loading ? <p>Memuat...</p> : (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '15px' }}>
+          {comments.map((comment) => {
+            const isOwner = currentUser && currentUserName === comment.user_name;
+            const canEditOrDelete = isOwner || isAdmin;
+
+            return (
+              <div key={comment.id} style={{ backgroundColor: 'white', padding: '20px', borderRadius: '15px', border: '1px solid #f0f0f0' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+                  
+                  {/* Info User */}
+                  <div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '5px' }}>
+                      <div style={{ width: '30px', height: '30px', backgroundColor: isOwner ? '#f97316' : '#eee', color: isOwner ? 'white' : '#666', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold' }}>
+                        {comment.user_name ? comment.user_name.charAt(0).toUpperCase() : 'U'}
+                      </div>
+                      <strong style={{ color: '#151e32' }}>{comment.user_name}</strong>
+                    </div>
+                    <div style={{ fontSize: '0.75rem', color: '#999', marginLeft: '40px' }}>
+                      {/* Tanggal akan otomatis berubah jika baru diedit */}
+                      {formatDate(comment.created_at)}
+                    </div>
                   </div>
-                  <strong style={{ color: '#151e32' }}>{comment.user_name}</strong>
+
+                  {/* Tombol Aksi */}
+                  {canEditOrDelete && (
+                    <div style={{ display: 'flex', gap: '10px' }}>
+                      {editingId === comment.id ? (
+                        <>
+                          <button onClick={() => saveEdit(comment.id)} style={{ color: 'green', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Simpan</button>
+                          <button onClick={() => setEditingId(null)} style={{ color: 'gray', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Batal</button>
+                        </>
+                      ) : (
+                        <>
+                          <button onClick={() => startEditing(comment)} style={{ color: '#007bff', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>Edit</button>
+                          <button onClick={() => handleDelete(comment.id)} style={{ color: 'red', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.85rem' }}>
+                            {isAdmin && !isOwner ? "Hapus (Admin)" : "Hapus"}
+                          </button>
+                        </>
+                      )}
+                    </div>
+                  )}
                 </div>
-                <span style={{ fontSize: '0.8rem', color: '#999' }}>
-                  {new Date(comment.created_at).toLocaleDateString('id-ID', { 
-                    day: 'numeric', month: 'short', year: 'numeric' 
-                  })}
-                </span>
+
+                {/* Konten */}
+                <div style={{ marginTop: '10px', paddingLeft: '40px' }}>
+                  {editingId === comment.id ? (
+                    <textarea 
+                      value={editText} 
+                      onChange={(e) => setEditText(e.target.value)} 
+                      style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #ccc' }}
+                    />
+                  ) : (
+                    <p style={{ margin: 0, color: '#555', lineHeight: '1.5' }}>{comment.content}</p>
+                  )}
+                </div>
               </div>
-              <p style={{ margin: 0, color: '#555', lineHeight: '1.6', paddingLeft: '45px' }}>
-                {comment.content}
-              </p>
-            </div>
-          ))}
-        </div>
-      ) : (
-        <div style={{ textAlign: 'center', padding: '20px', color: '#888', fontStyle: 'italic' }}>
-          <p>Belum ada komentar di resep ini.</p>
-          <p>Jadilah yang pertama memberikan ulasan!</p>
+            );
+          })}
         </div>
       )}
     </div>
