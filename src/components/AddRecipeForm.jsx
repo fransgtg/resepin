@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { supabase } from '../supabaseClient';
+import { useModalHistory } from '../hooks/useModalHistory';
 import './AddRecipeForm.css';
 
 const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
-  const [loading, setLoading] = useState(false);
+  // Hook untuk tombol 'Back' browser
+  useModalHistory(onCancel, true);
 
-  // State Form
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Olahan Ayam');
   const [sourceUrl, setSourceUrl] = useState('');
@@ -14,9 +16,8 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
   const [stepsText, setStepsText] = useState('');
 
   const categories = [
-    "Olahan Ayam", "Olahan Ikan", "Olahan Kambing",
-    "Olahan Sapi", "Olahan Tahu", "Olahan Telur",
-    "Olahan Tempe", "Olahan Udang"
+    "Olahan Ayam","Olahan Ikan","Olahan Kambing","Olahan Sapi",
+    "Olahan Tahu","Olahan Telur","Olahan Tempe","Olahan Udang", "Lainnya"
   ];
 
   const handleSubmit = async (e) => {
@@ -24,17 +25,9 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
     if (!currentUser) return alert("Silakan login dulu!");
     setLoading(true);
 
-    const formattedIngredients = ingredientsText
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l)
-      .join('--');
-
-    const formattedSteps = stepsText
-      .split('\n')
-      .map(l => l.trim())
-      .filter(l => l)
-      .join('--');
+    // Format text area menjadi string dengan pemisah '--'
+    const formattedIngredients = ingredientsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
+    const formattedSteps = stepsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
 
     const newRecipe = {
       title: title.trim(),
@@ -52,107 +45,136 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
     if (error) {
       alert('Gagal: ' + error.message);
     } else {
-      alert('Resep Berhasil Diterbitkan!');
+      // Reset form atau tutup modal
+      alert('Resep Berhasil Diterbitkan! ✨');
       if (onSuccess) onSuccess();
+      else onCancel();
     }
   };
 
   return (
-    <div className="dark-glass-overlay">
+    <div className="dark-glass-overlay" onClick={onCancel}>
+      {/* Stop propagation agar klik di dalam card tidak menutup modal */}
+      <div className="dark-glass-card" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Tombol Close Absolut */}
+        <button className="close-btn-x" onClick={onCancel} aria-label="Close">✕</button>
 
-      {/* Tombol Close */}
-      <button className="close-btn-x" onClick={onCancel}>
-        ✕
-      </button>
-
-      <div className="dark-glass-card">
-
-        {/* HEADER */}
         <div className="dark-glass-header">
           <h2>Tambah Resep Baru</h2>
-          <p>Buat resep unggulanmu dan bagikan ke komunitas 📖✨</p>
+          <p>Bagikan resep andalanmu kepada komunitas 📖✨</p>
         </div>
 
-        {/* FORM SCROLL CONTENT */}
         <div className="dark-glass-scroll">
-          <form onSubmit={handleSubmit} className="dark-glass-form-grid">
-
-            {/* LEFT COLUMN */}
+          <form id="recipeForm" onSubmit={handleSubmit} className="dark-glass-form-grid">
+            
+            {/* KOLOM KIRI: Info Dasar */}
             <div className="form-col">
-              <label>Judul Resep</label>
-              <input
-                type="text"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Contoh: Ayam Woku Manado"
-                required
-              />
-
-              <label>Kategori</label>
-              <select value={category} onChange={(e) => setCategory(e.target.value)}>
-                {categories.map((cat) => (
-                  <option key={cat} value={cat}>{cat}</option>
-                ))}
-              </select>
-
-              <label>Link Gambar (URL)</label>
-              <input
-                type="text"
-                value={imgUrl}
-                onChange={(e) => setImgUrl(e.target.value)}
-                placeholder="https://..."
-              />
-
-              <div className="img-preview-box">
-                {imgUrl ? (
-                  <img
-                    src={imgUrl}
-                    alt="Preview"
-                    onError={(e) => (e.target.style.display = 'none')}
-                  />
-                ) : (
-                  <span>Preview Gambar</span>
-                )}
+              <div className="form-group">
+                <label>Judul Resep</label>
+                <input 
+                  type="text" 
+                  className="form-control"
+                  value={title} 
+                  onChange={e => setTitle(e.target.value)} 
+                  placeholder="Contoh: Ayam Bakar Madu"
+                  required
+                />
               </div>
 
-              <label>Sumber Referensi (Opsional)</label>
-              <input
-                type="text"
-                value={sourceUrl}
-                onChange={(e) => setSourceUrl(e.target.value)}
-                placeholder="https://sumber-resep.com"
-              />
+              <div className="form-group">
+                <label>Kategori</label>
+                <div className="select-wrapper">
+                  <select 
+                    className="form-control"
+                    value={category} 
+                    onChange={e => setCategory(e.target.value)}
+                  >
+                    {categories.map(cat => <option key={cat} value={cat}>{cat}</option>)}
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-group">
+                <label>Link Gambar (URL)</label>
+                <input
+                  type="url"
+                  className="form-control"
+                  value={imgUrl}
+                  onChange={e => setImgUrl(e.target.value)}
+                  placeholder="https://..."
+                />
+              </div>
+
+              {/* PREVIEW IMAGE */}
+              {imgUrl && (
+                <div className="img-preview-box">
+                  <img 
+                    src={imgUrl} 
+                    alt="Preview" 
+                    onError={(e) => {
+                      e.target.onerror = null; 
+                      e.target.src="https://via.placeholder.com/400x300?text=Gambar+Error";
+                    }} 
+                  />
+                </div>
+              )}
+
+              <div className="form-group">
+                <label>Sumber / Referensi (Opsional)</label>
+                <input 
+                  type="text" 
+                  className="form-control"
+                  value={sourceUrl} 
+                  onChange={e => setSourceUrl(e.target.value)}
+                  placeholder="Youtube, Instagram, dll" 
+                />
+              </div>
             </div>
 
-            {/* RIGHT COLUMN */}
+            {/* KOLOM KANAN: Detail Resep */}
             <div className="form-col">
-              <label>Bahan-bahan (Enter untuk baris baru)</label>
-              <textarea
-                value={ingredientsText}
-                onChange={(e) => setIngredientsText(e.target.value)}
-                required
-                placeholder="- 500gr Ayam\n- 2 siung Bawang Putih"
-              />
+              <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <label>Bahan-bahan</label>
+                <textarea 
+                  className="form-control"
+                  style={{ flex: 1 }}
+                  value={ingredientsText} 
+                  onChange={e => setIngredientsText(e.target.value)} 
+                  required 
+                  placeholder={"- 500gr Ayam Potong\n- 3 Siung Bawang Putih\n- 1 Sdt Garam..."}
+                />
+              </div>
 
-              <label>Cara Membuat (Enter untuk baris baru)</label>
-              <textarea
-                value={stepsText}
-                onChange={(e) => setStepsText(e.target.value)}
-                required
-                placeholder="1. Cuci ayam...\n2. Tumis bumbu..."
-              />
+              <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
+                <label>Cara Membuat</label>
+                <textarea 
+                  className="form-control"
+                  style={{ flex: 1 }}
+                  value={stepsText} 
+                  onChange={e => setStepsText(e.target.value)} 
+                  required 
+                  placeholder={"1. Cuci bersih ayam...\n2. Haluskan bumbu...\n3. Ungkep ayam hingga matang..."}
+                />
+              </div>
             </div>
 
           </form>
         </div>
 
-        {/* FOOTER */}
         <div className="dark-glass-footer">
-          <button type="submit" form="recipeForm" className="submit-btn" disabled={loading}>
+          <button type="button" onClick={onCancel} className="btn-cancel">
+            Batal
+          </button>
+          <button 
+            type="submit" 
+            form="recipeForm" /* Mengaitkan tombol ini dengan form id="recipeForm" */
+            className="submit-btn" 
+            disabled={loading}
+          >
             {loading ? "Menyimpan..." : "Terbitkan Resep ✨"}
           </button>
         </div>
-
       </div>
     </div>
   );

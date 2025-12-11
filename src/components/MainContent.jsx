@@ -46,8 +46,7 @@ const MainContent = ({
     checkUserRole();
   }, [currentUser]); 
 
-
-  // 1. LOGIN PAGE
+  // --- LOGIN PAGE ---
   if (nav.isLoginPage) {
     return (
       <AuthForm 
@@ -57,7 +56,7 @@ const MainContent = ({
     );
   }
 
-  // 2. ARTICLE PAGE
+  // --- ARTICLE PAGE ---
   if (nav.isArticlePage) {
     return currentUser ? (
       <ArticleList currentUser={currentUser} />
@@ -69,7 +68,7 @@ const MainContent = ({
     );
   }
 
-  // 3. ADD RECIPE PAGE
+  // --- ADD RECIPE PAGE ---
   if (nav.isAddRecipePage) {
     if (!isAdmin) {
       alert("Maaf, hanya Admin yang boleh menambah resep.");
@@ -94,7 +93,7 @@ const MainContent = ({
     );
   }
 
-  // 4. RECIPE DETAIL PAGE
+  // --- RECIPE DETAIL PAGE ---
   if (nav.selectedRecipe) {
     return (
       <RecipeDetail 
@@ -118,7 +117,7 @@ const MainContent = ({
     );
   }
 
-  // 5. MAIN HOMEPAGE
+  // --- MAIN HOMEPAGE ---
   return (
     <>
       <Hero />

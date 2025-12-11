@@ -1,105 +1,105 @@
 import React from 'react';
-import './Detail.css';
 import CommentsSection from './CommentsSection';
+import { useModalHistory } from '../hooks/useModalHistory';
+import './Detail.css';
 
-const RecipeDetail = ({ recipe, onClose, currentUser, onDelete, isAdmin }) => {
+const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
+  useModalHistory(onClose, !!recipe);
+
   if (!recipe) return null;
 
+  const ingredients = Array.isArray(recipe.ingredients)
+    ? recipe.ingredients
+    : recipe.ingredients?.split('--').map(item => item.trim()).filter(i => i) || [];
+
+  const steps = Array.isArray(recipe.steps)
+    ? recipe.steps
+    : recipe.steps?.split('--').map(item => item.trim()).filter(s => s) || [];
+
   return (
-    <div className="glass-overlay">
-      <div className="glass-card">
+    <div className="glass-overlay" onClick={onClose}>
+      <div className="glass-card" onClick={(e) => e.stopPropagation()}>
+        
+        {/* Tombol Close */}
+        <button className="glass-close-btn" onClick={onClose} aria-label="Close">✕</button>
 
-        {/* CLOSE BUTTON */}
-        <button onClick={onClose} className="glass-close-btn">&times;</button>
-
-        {/* HEADER */}
-        <div className="glass-header">
-          <span className="glass-badge">{recipe.category || "Resep Lezat"}</span>
-          <h1 className="glass-title">{recipe.title}</h1>
-          <p className="glass-date">
-            Diposting pada{" "}
-            {new Date(recipe.created_at || Date.now()).toLocaleDateString(
-              "id-ID",
-              { dateStyle: "long" }
-            )}
-          </p>
-        </div>
-
-        {/* IMAGE */}
-        <div className="glass-img-box">
-          <img
-            src={
-              recipe.img ||
-              recipe.image_url ||
-              "https://via.placeholder.com/800x400?text=No+Image"
-            }
-            alt={recipe.title}
-            onError={(e) =>
-              (e.target.src =
-                "https://via.placeholder.com/800x400?text=Image+Error")
-            }
-          />
-        </div>
-
-        {/* ADMIN */}
-        {isAdmin && (
-          <div className="glass-admin-box">
-            <p className="admin-warning">⚠️ Area Admin</p>
-            <button onClick={onDelete} className="glass-delete-btn">
-              Hapus Resep Ini
-            </button>
-          </div>
-        )}
-
-        {/* CONTENT GRID */}
-        <div className="glass-grid">
-          {/* Ingredients */}
-          <div className="glass-section">
-            <h3 className="glass-section-title">Bahan-bahan</h3>
-            <ul className="glass-list">
-              {recipe.ingredients?.map((item, i) => (
-                <li key={i} className="glass-list-item">• {item}</li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Steps */}
-          <div className="glass-section">
-            <h3 className="glass-section-title">Cara Membuat</h3>
-            <div className="glass-step-list">
-              {recipe.steps?.map((step, i) => (
-                <div key={i} className="glass-step-item">
-                  <span className="glass-step-number">{i + 1}</span>
-                  <p className="glass-step-text">{step}</p>
-                </div>
-              ))}
+        <div className="glass-scroll-content">
+          
+          {/* === HEADER (HANYA TEKS) === */}
+          <div className="glass-header-simple">
+            <span className="glass-badge">{recipe.category || "Umum"}</span>
+            <h1 className="glass-title">{recipe.title}</h1>
+            <div className="glass-meta">
+              <span>🗓 {new Date(recipe.created_at || Date.now()).toLocaleDateString("id-ID", { dateStyle: "long" })}</span>
+              {recipe.username && <span>👤 oleh {recipe.username}</span>}
             </div>
           </div>
-        </div>
 
-        {/* SOURCE */}
-        {recipe.url && (
-          <div className="glass-source-box">
-            <a
-              href={recipe.url}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="glass-source-link"
-            >
-              Kunjungi Sumber Asli →
-            </a>
+          <div className="glass-body">
+            
+            {/* Admin Delete Action */}
+            {isAdmin && (
+              <div className="glass-admin-box">
+                <button 
+                  onClick={() => { if(window.confirm('Hapus resep ini secara permanen?')) onDelete(); }} 
+                  className="glass-delete-btn"
+                >
+                  Hapus Resep Ini 🗑️
+                </button>
+              </div>
+            )}
+
+            {/* Grid Layout */}
+            <div className="glass-grid">
+              
+              {/* Kolom Kiri: Bahan */}
+              <div className="glass-section">
+                <h3 className="glass-section-title">Bahan-bahan 🥕</h3>
+                <ul className="glass-ingredients-list">
+                  {ingredients.length > 0 ? ingredients.map((item, i) => (
+                    <li key={i} className="glass-ingredient-item">
+                      <span className="bullet-check">✔</span> 
+                      <span>{item}</span>
+                    </li>
+                  )) : (
+                    <li style={{color:'#aaa', fontStyle:'italic'}}>Tidak ada data bahan.</li>
+                  )}
+                </ul>
+              </div>
+
+              {/* Kolom Kanan: Cara Membuat */}
+              <div className="glass-section">
+                <h3 className="glass-section-title">Cara Membuat 🍳</h3>
+                <div className="glass-steps-container">
+                  {steps.length > 0 ? steps.map((step, i) => (
+                    <div key={i} className="glass-step-item">
+                      <div className="glass-step-number">{i + 1}</div>
+                      <div className="glass-step-text">{step}</div>
+                    </div>
+                  )) : (
+                    <p style={{color:'#aaa', fontStyle:'italic'}}>Tidak ada langkah pembuatan.</p>
+                  )}
+                </div>
+              </div>
+            </div>
+
+            {/* Source Link */}
+            {recipe.url && (
+              <div className="glass-source-box">
+                <p style={{marginBottom:'0.5rem', color:'#aaa'}}>Referensi:</p>
+                <a href={recipe.url} target="_blank" rel="noopener noreferrer" className="glass-source-link">
+                  Kunjungi Sumber Asli ↗
+                </a>
+              </div>
+            )}
+
+            {/* Komentar */}
+            <div style={{marginTop: '2rem'}}>
+              <CommentsSection recipeId={recipe.id} currentUser={currentUser} isAdmin={isAdmin} />
+            </div>
+
           </div>
-        )}
-
-        {/* COMMENTS */}
-        <div className="glass-comments">
-          <CommentsSection
-            recipeId={recipe.id}
-            currentUser={currentUser}
-            isAdmin={isAdmin}
-          />
         </div>
-
       </div>
     </div>
   );
