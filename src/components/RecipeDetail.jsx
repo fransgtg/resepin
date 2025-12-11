@@ -1,86 +1,104 @@
 import React from 'react';
-import './Detail.css'; // Import CSS gabungan
+import './Detail.css';
 import CommentsSection from './CommentsSection';
 
 const RecipeDetail = ({ recipe, onClose, currentUser, onDelete, isAdmin }) => {
   if (!recipe) return null;
 
   return (
-    <div className="recipe-modal-overlay">
-      <div className="recipe-modal-card">
-        
-        <button onClick={onClose} className="recipe-modal-close-btn">&times;</button>
+    <div className="glass-overlay">
+      <div className="glass-card">
+
+        {/* CLOSE BUTTON */}
+        <button onClick={onClose} className="glass-close-btn">&times;</button>
 
         {/* HEADER */}
-        <div className="recipe-modal-header">
-          <span className="recipe-category-badge">{recipe.category || 'Resep Lezat'}</span>
-          <h1 className="recipe-modal-title">{recipe.title}</h1>
-          <p style={{ color: '#94a3b8', fontSize: '0.9rem' }}>
-            Diposting pada {new Date(recipe.created_at || Date.now()).toLocaleDateString('id-ID', { dateStyle: 'long' })}
+        <div className="glass-header">
+          <span className="glass-badge">{recipe.category || "Resep Lezat"}</span>
+          <h1 className="glass-title">{recipe.title}</h1>
+          <p className="glass-date">
+            Diposting pada{" "}
+            {new Date(recipe.created_at || Date.now()).toLocaleDateString(
+              "id-ID",
+              { dateStyle: "long" }
+            )}
           </p>
         </div>
 
-        {/* GAMBAR */}
-        <div className="recipe-image-wrapper">
-          <img 
-            src={recipe.img || recipe.image_url || "https://via.placeholder.com/800x400?text=No+Image"} 
-            alt={recipe.title} 
-            className="recipe-modal-img"
-            onError={(e) => e.target.src = "https://via.placeholder.com/800x400?text=Image+Error"}
+        {/* IMAGE */}
+        <div className="glass-img-box">
+          <img
+            src={
+              recipe.img ||
+              recipe.image_url ||
+              "https://via.placeholder.com/800x400?text=No+Image"
+            }
+            alt={recipe.title}
+            onError={(e) =>
+              (e.target.src =
+                "https://via.placeholder.com/800x400?text=Image+Error")
+            }
           />
         </div>
 
-        {/* ADMIN PANEL */}
+        {/* ADMIN */}
         {isAdmin && (
-          <div className="admin-actions-area">
-            <p className="admin-label">⚠️ Area Admin</p>
-            <button onClick={onDelete} className="btn-delete-recipe">Hapus Resep Ini</button>
+          <div className="glass-admin-box">
+            <p className="admin-warning">⚠️ Area Admin</p>
+            <button onClick={onDelete} className="glass-delete-btn">
+              Hapus Resep Ini
+            </button>
           </div>
         )}
 
-        {/* KONTEN */}
-        <div className="recipe-content-grid">
-          {/* Bahan */}
-          <div className="recipe-column">
-            <h3 className="section-title">Bahan-bahan</h3>
-            <ul className="ingredients-list">
-              {recipe.ingredients && recipe.ingredients.map((item, index) => (
-                <li key={index} className="ingredient-item">
-                  <span className="bullet-point">•</span>{item}
-                </li>
+        {/* CONTENT GRID */}
+        <div className="glass-grid">
+          {/* Ingredients */}
+          <div className="glass-section">
+            <h3 className="glass-section-title">Bahan-bahan</h3>
+            <ul className="glass-list">
+              {recipe.ingredients?.map((item, i) => (
+                <li key={i} className="glass-list-item">• {item}</li>
               ))}
             </ul>
           </div>
 
-          {/* Langkah */}
-          <div className="recipe-column">
-            <h3 className="section-title">Cara Membuat</h3>
-            <div className="steps-container">
-              {recipe.steps && recipe.steps.map((step, index) => (
-                <div key={index} className="step-item">
-                  <div className="step-number">{index + 1}</div>
-                  <p className="step-text">{step}</p>
+          {/* Steps */}
+          <div className="glass-section">
+            <h3 className="glass-section-title">Cara Membuat</h3>
+            <div className="glass-step-list">
+              {recipe.steps?.map((step, i) => (
+                <div key={i} className="glass-step-item">
+                  <span className="glass-step-number">{i + 1}</span>
+                  <p className="glass-step-text">{step}</p>
                 </div>
               ))}
             </div>
           </div>
         </div>
 
-        {/* SUMBER */}
+        {/* SOURCE */}
         {recipe.url && (
-          <div className="source-link-container">
-            <a href={recipe.url} target="_blank" rel="noopener noreferrer" className="source-link">
-              Kunjungi Sumber Asli &rarr;
+          <div className="glass-source-box">
+            <a
+              href={recipe.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="glass-source-link"
+            >
+              Kunjungi Sumber Asli →
             </a>
           </div>
         )}
 
-        {/* KOMENTAR */}
-        <CommentsSection 
-          recipeId={recipe.id} 
-          currentUser={currentUser} 
-          isAdmin={isAdmin} 
-        />
+        {/* COMMENTS */}
+        <div className="glass-comments">
+          <CommentsSection
+            recipeId={recipe.id}
+            currentUser={currentUser}
+            isAdmin={isAdmin}
+          />
+        </div>
 
       </div>
     </div>

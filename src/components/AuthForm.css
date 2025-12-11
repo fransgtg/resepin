@@ -1,5 +1,3 @@
-/* src/components/AuthForm.css */
-
 /* Overlay Background (Latar gelap transparan) */
 .auth-overlay {
   position: fixed;
@@ -71,7 +69,7 @@
   background-color: #f9f9f9;
   font-size: 1rem;
   font-family: inherit;
-  box-sizing: border-box; /* Penting agar padding tidak melebarkan elemen */
+  box-sizing: border-box;
   transition: border-color 0.3s;
 }
 

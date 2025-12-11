@@ -1,198 +1,188 @@
-/* src/components/ArticleList.css */
-
-/* --- RESET & LAYOUT UTAMA --- */
-.article-wrapper {
-  /* Menggunakan !important untuk memastikan background putih menimpa background hijau */
-  background-color: #f8fafc !important; 
+.article-wrapper-magz {
+  background: #fafafa;
   min-height: 100vh;
-  padding: 60px 20px;
-  font-family: 'Poppins', sans-serif;
-  animation: fadeInArticle 0.6s ease-out;
-  position: relative;
-  z-index: 10;
+  padding: 70px 20px;
+  font-family: "Poppins", sans-serif;
+  animation: fadeSlideUp 0.5s ease;
 }
 
-.page-main-title {
+.article-main-title {
   text-align: center;
-  font-size: 2.5rem;
-  color: #1e293b;
-  margin-bottom: 40px;
-  font-weight: 700;
+  font-size: 2.8rem;
+  color: #111827;
+  margin-bottom: 50px;
   letter-spacing: -0.5px;
+  font-weight: 700;
 }
 
-/* --- KARTU ARTIKEL --- */
-.article-card {
-  background-color: #ffffff;
+/*ARTICLE CARD (MAGAZINE LOOK)*/
+.article-magz-card {
+  background: #ffffff;
   max-width: 900px;
   margin: 0 auto;
-  border-radius: 24px;
-  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.08);
+  border-radius: 18px;
   overflow: hidden;
-  border: 1px solid rgba(0,0,0,0.02);
+  box-shadow: 0 12px 35px rgba(0,0,0,0.08);
+  border: 1px solid rgba(0,0,0,0.04);
 }
 
-/* Header Gambar */
-.article-img-header {
-  height: 400px;
-  width: 100%;
+/* Header Image */
+.article-magz-image {
+  height: 380px;
+  overflow: hidden;
   position: relative;
-  overflow: hidden;
 }
 
-.article-img-header img {
+.article-magz-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.5s ease;
+  transition: transform .6s ease;
 }
 
-.article-card:hover .article-img-header img {
-  transform: scale(1.03);
+.article-magz-card:hover .article-magz-image img {
+  transform: scale(1.06);
 }
 
-/* Konten Dalam */
-.article-body {
-  padding: 50px 60px;
+/*ARTICLE TEXT CONTENT*/
+.article-magz-body {
+  padding: 55px 60px;
 }
 
-.content-headline {
+.magz-headline {
   font-size: 2.2rem;
-  color: #0f172a;
-  line-height: 1.3;
-  margin-bottom: 30px;
+  color: #1e293b;
+  line-height: 1.35;
   font-weight: 700;
+  margin-bottom: 25px;
 }
 
-.content-paragraph {
-  font-size: 1.05rem;
+.magz-paragraph {
   color: #475569;
-  line-height: 1.8;
-  margin-bottom: 24px;
+  font-size: 1.05rem;
+  line-height: 1.85;
+  margin-bottom: 20px;
 }
 
-.content-paragraph.no-margin {
-  margin-bottom: 0;
+/* SECTION TITLE */
+.magz-section-title {
+  font-size: 1.4rem;
+  color: #111827;
+  margin-bottom: 12px;
+  border-bottom: 2px solid #e5e7eb;
+  padding-bottom: 6px;
+  font-weight: 600;
+  letter-spacing: -0.2px;
 }
 
-/* --- AKSESORIS KONTEN (Quote, Alert, List) --- */
-.content-section {
+.magz-section {
   margin-top: 40px;
 }
 
-.content-section h3 {
-  font-size: 1.4rem;
-  color: #1e293b;
-  margin-bottom: 15px;
-  border-bottom: 2px solid #f1f5f9;
-  padding-bottom: 10px;
+/* QUOTE — Magazine Blue */
+.magz-quote {
+  margin: 35px 0;
+  padding: 25px;
+  background: #f0f9ff;
+  border-left: 5px solid #38bdf8;
+  border-radius: 8px;
+  font-size: 1.1rem;
+  font-style: italic;
+  color: #0f172a;
+  line-height: 1.7;
 }
 
-.content-section ol, 
-.content-section ul {
-  padding-left: 20px;
+/* Number List */
+.magz-list-number {
+  padding-left: 22px;
   color: #475569;
 }
 
-.content-section li {
+.magz-list-number li {
   margin-bottom: 10px;
   line-height: 1.7;
 }
 
-/* Quote Biru */
-.quote-box {
-  background-color: #f0f9ff;
-  border-left: 5px solid #0ea5e9;
+/* ALERT BOX */
+.magz-alert {
+  margin-top: 45px;
   padding: 25px;
-  border-radius: 0 12px 12px 0;
-  font-style: italic;
-  color: #334155;
-  margin: 30px 0;
-  font-size: 1.05rem;
+  background: #fff7ed;
+  border-left: 5px solid #f97316;
+  border-radius: 10px;
+  border: 1px solid #ffe4cc;
 }
 
-/* Alert Kuning/Oranye */
-.alert-box {
-  margin-top: 50px;
-  background-color: #fff7ed;
-  border: 1px solid #ffedd5;
-  border-left: 5px solid #c2410c;
-  padding: 25px;
-  border-radius: 12px;
-}
-
-.alert-header {
+.magz-alert-title {
   color: #c2410c;
   font-size: 1.1rem;
-  font-weight: bold;
+  font-weight: 700;
   margin-bottom: 10px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
 }
 
-/* Footer Referensi */
-.source-footer {
+/* Source Footer */
+.magz-source {
   margin-top: 60px;
-  padding-top: 30px;
-  border-top: 1px solid #e2e8f0;
-  font-size: 0.9rem;
-  color: #94a3b8;
+  font-size: 0.95rem;
+  color: #6b7280;
 }
 
-.source-list {
-  list-style: none;
-  padding: 0;
+.magz-source ul {
+  padding-left: 20px;
   margin-top: 10px;
 }
 
-.source-list a {
-  color: #f97316;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.2s;
+.magz-source li {
+  margin-bottom: 6px;
 }
 
-.source-list a:hover {
-  color: #c2410c;
-  text-decoration: underline;
-}
-
-/* --- KONTEN TERKUNCI (LOCKED) --- */
-.locked-wrapper {
-  background-color: rgba(255, 255, 255, 0.95);
-  backdrop-filter: blur(10px);
-  max-width: 600px;
+/* LOCKED CONTENT (LOGIN REQUIRED)*/
+.locked-wrapper-magz {
+  background: rgba(255,255,255,0.75);
+  backdrop-filter: blur(14px);
+  max-width: 550px;
   margin: 80px auto;
   padding: 50px;
-  text-align: center;
   border-radius: 30px;
-  box-shadow: 0 20px 50px rgba(0,0,0,0.1);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+  text-align: center;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.1);
 }
 
-.locked-title {
-  color: #151e32;
-  margin: 15px 0;
+.lock-icon-magz {
+  font-size: 3rem;
+  margin-bottom: 15px;
+}
+
+.locked-title-magz {
   font-size: 1.8rem;
+  color: #1e293b;
 }
 
-.locked-text {
-  color: #64748b;
+.locked-text-magz {
+  margin-top: 10px;
+  color: #475569;
   margin-bottom: 30px;
 }
 
-/* Responsif */
-@media (max-width: 768px) {
-  .article-wrapper { padding: 20px 15px; }
-  .article-body { padding: 30px 20px; }
-  .article-img-header { height: 250px; }
-  .content-headline { font-size: 1.6rem; }
+.btn-login-magz {
+  background: #f97316;
+  border: none;
+  color: white;
+  padding: 14px 35px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: transform .2s ease, box-shadow .2s ease;
 }
 
-@keyframes fadeInArticle {
-  from { opacity: 0; transform: translateY(20px); }
+.btn-login-magz:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px rgba(249,115,22,0.3);
+}
+
+/* Animation */
+@keyframes fadeSlideUp {
+  from { opacity: 0; transform: translateY(25px); }
   to { opacity: 1; transform: translateY(0); }
 }

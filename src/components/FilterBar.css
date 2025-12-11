@@ -1,21 +1,23 @@
-/* src/components/FilterBar.css */
-
-/* Container Utama */
+/* ================================
+   FILTER BAR CONTAINER
+================================ */
 .filters {
   position: relative;
   display: flex;
   gap: 15px;
   margin-bottom: 30px;
   align-items: center;
-  flex-wrap: wrap; /* Agar turun ke bawah jika layar sempit */
+  flex-wrap: wrap;
 }
 
-/* Wrapper untuk setiap tombol filter (agar dropdown posisinya benar) */
+/* Wrapper setiap tombol */
 .filter-group {
   position: relative;
 }
 
-/* Style Dasar Tombol Filter (Orange Penuh) */
+/* ================================
+   TOMBOL FILTER UTAMA
+================================ */
 .btn-filter {
   background-color: #f97316;
   color: white;
@@ -24,74 +26,78 @@
   border-radius: 50px;
   font-weight: 600;
   cursor: pointer;
-  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
   display: flex;
   align-items: center;
-  gap: 12px;
-  transition: all 0.2s;
-  min-width: 180px;
   justify-content: space-between;
-  border: 2px solid transparent; /* Untuk menjaga ukuran sama dengan outline */
+  gap: 12px;
+  min-width: 180px;
+  border: 2px solid transparent;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
 }
 
-.btn-filter:hover, .btn-filter.active {
+/* Hover dan aktivasi */
+.btn-filter:hover,
+.btn-filter.active {
   background-color: #ea580c;
   transform: translateY(-2px);
 }
 
-/* Modifier: Tombol Kategori (Lebih lebar sedikit) */
+/* Tombol kategori */
 .btn-filter-category {
   min-width: 200px;
 }
 
-/* Modifier: Tombol Sort (Style Outline/Putih) */
+/* ================================
+   TOMBOL SORT (OUTLINE)
+================================ */
 .btn-filter-outline {
   min-width: 160px;
   background-color: white;
   color: #f97316;
   border: 2px solid #f97316;
-  box-shadow: none; /* Opsional: hilangkan shadow jika ingin flat */
+  box-shadow: none;
 }
 
-/* Hover state untuk tombol outline: berubah jadi orange */
-.btn-filter-outline:hover, .btn-filter-outline.active {
+.btn-filter-outline:hover,
+.btn-filter-outline.active {
   background-color: #f97316;
   color: white;
-  border-color: #f97316;
   transform: translateY(-2px);
 }
 
-/* Dropdown Menu */
+/* ================================
+   DROPDOWN
+================================ */
 .filter-dropdown {
   position: absolute;
-  top: 120%; /* Sedikit lebih berjarak dari tombol */
+  top: 120%;
   left: 0;
   background-color: white;
   min-width: 220px;
   border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
   padding: 10px;
-  z-index: 50;
-  border: 1px solid #eee;
   display: flex;
   flex-direction: column;
-  gap: 5px;
-  animation: fadeIn 0.2s ease-out;
+  gap: 6px;
+  z-index: 50;
+  border: 1px solid #eee;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+  animation: fadeIn 0.18s ease-out;
 }
 
-/* Modifier: Dropdown Sort (Lebih kecil) */
 .filter-dropdown-sort {
   min-width: 160px;
 }
 
-/* Item dalam Dropdown */
+/* Item pada dropdown */
 .filter-item {
   padding: 12px 15px;
   border-radius: 10px;
+  cursor: pointer;
   font-size: 0.95rem;
   color: #333;
-  cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s ease;
 }
 
 .filter-item:hover {
@@ -105,22 +111,26 @@
   font-weight: 700;
 }
 
-/* Animasi sederhana */
+/* ================================
+   ANIMASI
+================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsif */
+/* ================================
+   RESPONSIVE
+================================ */
 @media (max-width: 900px) {
   .filters {
     justify-content: center;
   }
-  
+
   .filter-dropdown {
     left: 50%;
     transform: translateX(-50%);
-    width: 90%; /* Dropdown melebar di HP */
+    width: 90%;
     min-width: auto;
   }
 }

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { supabase } from '../supabaseClient';
 
-// Import semua komponen
 import Hero from './Hero';
 import RecipeDetail from './RecipeDetail';
 import AuthForm from './AuthForm';
@@ -21,24 +20,19 @@ const MainContent = ({
   onDeleteRecipe    
 }) => {
   
-  // State untuk menyimpan status Admin
   const [isAdmin, setIsAdmin] = useState(false);
 
-  // Helper: List kategori untuk filter
   const categoriesList = ['All', ...new Set(allRecipes.map(r => r.category))];
 
-  // --- [ADMIN CHECK] Cek apakah user adalah Admin ---
   useEffect(() => {
     const checkUserRole = async () => {
       if (currentUser) {
-        // Ambil data role dari tabel 'profiles' berdasarkan ID user yang login
         const { data, error } = await supabase
           .from('profiles')
           .select('role')
           .eq('id', currentUser.id)
           .single();
-        
-        // Jika role-nya 'admin', set isAdmin jadi true
+
         if (!error && data && data.role === 'admin') {
           setIsAdmin(true);
         } else {
@@ -52,23 +46,31 @@ const MainContent = ({
     checkUserRole();
   }, [currentUser]); 
 
-  // 1. LOGIN View
+
+  // 1. LOGIN PAGE
   if (nav.isLoginPage) {
-    return <AuthForm onCancel={nav.goHome} onLoginSuccess={() => nav.setIsLoginPage(false)} />;
+    return (
+      <AuthForm 
+        onCancel={nav.goHome} 
+        onLoginSuccess={() => nav.setIsLoginPage(false)} 
+      />
+    );
   }
 
-  // 2. ARTICLE View
+  // 2. ARTICLE PAGE
   if (nav.isArticlePage) {
     return currentUser ? (
       <ArticleList currentUser={currentUser} />
     ) : (
-      <AuthForm onCancel={nav.goHome} onLoginSuccess={() => nav.setIsLoginPage(false)} />
+      <AuthForm 
+        onCancel={nav.goHome} 
+        onLoginSuccess={() => nav.setIsLoginPage(false)} 
+      />
     );
   }
 
-  // 3. ADD RECIPE View (Halaman Tambah Resep)
+  // 3. ADD RECIPE PAGE
   if (nav.isAddRecipePage) {
-    // Keamanan Frontend: Jika bukan admin, kembalikan ke Home
     if (!isAdmin) {
       alert("Maaf, hanya Admin yang boleh menambah resep.");
       nav.goHome();
@@ -78,41 +80,36 @@ const MainContent = ({
     return currentUser ? (
       <AddRecipeForm 
         currentUser={currentUser} 
-        onCancel={nav.goHome} 
+        onCancel={nav.goHome}
         onSuccess={async () => {
-          // Refresh data agar resep baru muncul di Grid
-          if (onRefreshRecipes) await onRefreshRecipes(); 
+          if (onRefreshRecipes) await onRefreshRecipes();
           nav.goHome();
-        }} 
+        }}
       />
     ) : (
-      <AuthForm onCancel={nav.goHome} onLoginSuccess={() => nav.setIsLoginPage(false)} />
+      <AuthForm 
+        onCancel={nav.goHome} 
+        onLoginSuccess={() => nav.setIsLoginPage(false)} 
+      />
     );
   }
 
-  // 4. RECIPE DETAIL View (Detail Resep & Komentar)
+  // 4. RECIPE DETAIL PAGE
   if (nav.selectedRecipe) {
     return (
       <RecipeDetail 
-        recipe={nav.selectedRecipe} 
-        onClose={nav.handleCloseDetail} 
-        currentUser={currentUser} 
-        
-        // [PENTING] Kirim status Admin ke Detail agar tombol hapus muncul
-        isAdmin={isAdmin} 
-
-        // [DELETE LOGIC] Fungsi Hapus Resep Khusus Admin
+        recipe={nav.selectedRecipe}
+        onClose={nav.handleCloseDetail}
+        currentUser={currentUser}
+        isAdmin={isAdmin}
         onDelete={() => {
           const recipeId = nav.selectedRecipe.id;
-          
-          // Konfirmasi ekstra untuk Admin
-          if (window.confirm(`[ADMIN] Yakin ingin MENGHAPUS resep "${nav.selectedRecipe.title}" secara permanen?`)) {
-            
-            // Panggil fungsi hapus dari props (useRecipes hook)
+
+          if (window.confirm(`[ADMIN] Yakin ingin menghapus resep "${nav.selectedRecipe.title}" secara permanen?`)) {
             onDeleteRecipe(recipeId).then((success) => {
               if (success) {
                 alert("Resep berhasil dihapus.");
-                nav.handleCloseDetail(); // Tutup modal jika sukses
+                nav.handleCloseDetail();
               }
             });
           }
@@ -121,12 +118,11 @@ const MainContent = ({
     );
   }
 
-  // 5. MAIN DASHBOARD View (Hero + Filter + Grid)
+  // 5. MAIN HOMEPAGE
   return (
     <>
       <Hero />
-      
-      {/* Filter & Sort Bar */}
+
       <FilterBar 
         activeCategory={nav.activeCategory}
         showFilterMenu={nav.showFilterMenu}
@@ -134,7 +130,7 @@ const MainContent = ({
         categoriesList={categoriesList}
         onFilterClick={nav.handleFilterClick}
         recipeSectionRef={nav.recipeSectionRef}
-        
+
         sortOption={nav.sortOption}
         showSortMenu={nav.showSortMenu}
         setShowSortMenu={nav.setShowSortMenu}
@@ -147,13 +143,16 @@ const MainContent = ({
           recipes={displayedRecipes}
           searchQuery={nav.searchQuery}
           activeCategory={nav.activeCategory}
+
+          activeSort={nav.sortOption}   // sorting dikirim ke RecipeGrid
+
           onRecipeClick={nav.handleOpenRecipe}
-          
-          // Tombol "+ Tambah" hanya aktif jika user adalah ADMIN
-          onAddRecipe={isAdmin ? nav.goToAddRecipe : null} 
+          onAddRecipe={isAdmin ? nav.goToAddRecipe : null}
         />
       ) : (
-        <LockedContent onLoginClick={() => nav.setIsLoginPage(true)} />
+        <LockedContent 
+          onLoginClick={() => nav.setIsLoginPage(true)} 
+        />
       )}
     </>
   );

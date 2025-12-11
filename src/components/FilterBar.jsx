@@ -1,5 +1,5 @@
 import React from 'react';
-import './FilterBar.css'; 
+import './FilterBar.css';
 
 const FilterIcon = () => (
   <svg width="16" height="16" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
@@ -13,11 +13,11 @@ const SortIcon = () => (
   </svg>
 );
 
-const FilterBar = ({ 
-  activeCategory, 
-  showFilterMenu, 
-  setShowFilterMenu, 
-  categoriesList, 
+const FilterBar = ({
+  activeCategory,
+  showFilterMenu,
+  setShowFilterMenu,
+  categoriesList,
   onFilterClick,
   recipeSectionRef,
   sortOption,
@@ -27,7 +27,7 @@ const FilterBar = ({
 }) => {
 
   const getSortLabel = (opt) => {
-    switch(opt) {
+    switch (opt) {
       case 'newest': return 'Terbaru';
       case 'oldest': return 'Terlama';
       case 'a-z': return 'Abjad A-Z';
@@ -38,37 +38,73 @@ const FilterBar = ({
 
   return (
     <div className="filters" ref={recipeSectionRef}>
-      
-      {/* 1. BUTTON FILTER KATEGORI */}
+
+      {/* ------------------ FILTER KATEGORI ------------------ */}
       <div className="filter-group">
-        <button 
+        <button
           className={`btn-filter btn-filter-category ${showFilterMenu ? 'active' : ''}`}
-          onClick={() => { setShowFilterMenu(!showFilterMenu); setShowSortMenu(false); }}
+          onClick={() => {
+            setShowFilterMenu(!showFilterMenu);
+            setShowSortMenu(false);
+          }}
         >
-          {activeCategory === 'All' ? 'Filter Kategori' : activeCategory}
+          {/* Label tombol */}
+          {
+            activeCategory === 'All'
+              ? 'Semua Resep'
+              : activeCategory === 'Perwakilan'
+              ? 'Perwakilan Menu'
+              : activeCategory
+          }
+
           <FilterIcon />
         </button>
 
         {showFilterMenu && (
           <div className="filter-dropdown">
-            {categoriesList.map((cat, idx) => (
-              <div 
-                key={idx} 
-                className={`filter-item ${activeCategory === cat ? 'active' : ''}`}
-                onClick={() => onFilterClick(cat)}
-              >
-                {cat === 'All' ? 'Tampilkan Perwakilan Menu' : cat}
-              </div>
-            ))}
+            
+            {/* 🔥 Pilihan Perwakilan Menu */}
+            <div
+              className={`filter-item ${activeCategory === 'Perwakilan' ? 'active' : ''}`}
+              onClick={() => onFilterClick('Perwakilan')}
+            >
+              Tampilkan Perwakilan Menu (9 Resep)
+            </div>
+
+            {/* 🔥 Semua resep */}
+            <div
+              className={`filter-item ${activeCategory === 'All' ? 'active' : ''}`}
+              onClick={() => onFilterClick('All')}
+            >
+              Semua Resep
+            </div>
+
+            {/* 🔥 Kategori lainnya */}
+            {categoriesList
+              .filter((cat) => cat !== 'All')
+              .map((cat, idx) => (
+                <div
+                  key={idx}
+                  className={`filter-item ${activeCategory === cat ? 'active' : ''}`}
+                  onClick={() => onFilterClick(cat)}
+                >
+                  {cat}
+                </div>
+              ))
+            }
+
           </div>
         )}
       </div>
 
-      {/* 2. BUTTON SORTING */}
+      {/* ------------------ FILTER SORT ------------------ */}
       <div className="filter-group">
-        <button 
+        <button
           className={`btn-filter btn-filter-outline ${showSortMenu ? 'active' : ''}`}
-          onClick={() => { setShowSortMenu(!showSortMenu); setShowFilterMenu(false); }}
+          onClick={() => {
+            setShowSortMenu(!showSortMenu);
+            setShowFilterMenu(false);
+          }}
         >
           {getSortLabel(sortOption)}
           <SortIcon />
@@ -76,16 +112,28 @@ const FilterBar = ({
 
         {showSortMenu && (
           <div className="filter-dropdown filter-dropdown-sort">
-            <div className={`filter-item ${sortOption === 'newest' ? 'active' : ''}`} onClick={() => onSortClick('newest')}>
+            <div
+              className={`filter-item ${sortOption === 'newest' ? 'active' : ''}`}
+              onClick={() => onSortClick('newest')}
+            >
               Terbaru (Default)
             </div>
-            <div className={`filter-item ${sortOption === 'oldest' ? 'active' : ''}`} onClick={() => onSortClick('oldest')}>
+            <div
+              className={`filter-item ${sortOption === 'oldest' ? 'active' : ''}`}
+              onClick={() => onSortClick('oldest')}
+            >
               Terlama
             </div>
-            <div className={`filter-item ${sortOption === 'a-z' ? 'active' : ''}`} onClick={() => onSortClick('a-z')}>
+            <div
+              className={`filter-item ${sortOption === 'a-z' ? 'active' : ''}`}
+              onClick={() => onSortClick('a-z')}
+            >
               Abjad A-Z
             </div>
-            <div className={`filter-item ${sortOption === 'z-a' ? 'active' : ''}`} onClick={() => onSortClick('z-a')}>
+            <div
+              className={`filter-item ${sortOption === 'z-a' ? 'active' : ''}`}
+              onClick={() => onSortClick('z-a')}
+            >
               Abjad Z-A
             </div>
           </div>
