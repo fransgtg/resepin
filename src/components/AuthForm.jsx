@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './AuthForm.css';
-import { supabase } from '../supabaseClient';
+import { supabase } from '../services/supabaseClient';
 
 const AuthForm = ({ onCancel, onLoginSuccess }) => {
   const [isRegister, setIsRegister] = useState(false);

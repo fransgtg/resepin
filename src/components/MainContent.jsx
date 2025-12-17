@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { supabase } from '../supabaseClient';
-
+import { supabase } from '../services/supabaseClient';
 import Hero from './Hero';
 import RecipeDetail from './RecipeDetail';
 import AuthForm from './AuthForm';

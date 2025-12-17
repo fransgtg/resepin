@@ -1,10 +1,9 @@
 import React from 'react';
 import './App.css';
-import { useAuth } from './hooks/useAuth';
-import { useRecipes } from './hooks/useRecipes';
+import { useAuth } from './services/useAuth';
+import { useRecipes } from './services/useRecipes';
 import { useRecipeNavigation } from './hooks/useRecipeNavigation';
 import { useRecipeFilter } from './hooks/useRecipeFilter';
-
 import NavBar from './components/NavBar';
 import MainContent from './components/MainContent'; 
 
