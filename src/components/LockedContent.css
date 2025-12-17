@@ -1,30 +1,25 @@
-/* src/components/LockedContent.css */
-
-/* Container Utama */
 .locked-content {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 50vh; /* Tinggi minimal agar terlihat proporsional */
+  min-height: 50vh;
   text-align: center;
-  background-color: rgba(255, 255, 255, 0.463); /* Sedikit lebih solid agar tulisan jelas */
+  background-color: rgba(255, 255, 255, 0.463);
   opacity: 0.95;
   border-radius: 30px;
   padding: 50px;
   margin-top: 40px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-  backdrop-filter: blur(5px); /* Efek blur halus di belakang */
+  backdrop-filter: blur(5px); 
 }
 
-/* Icon Gembok */
 .locked-icon {
   font-size: 3.5rem;
   margin-bottom: 15px;
-  animation: bounce 2s infinite; /* Sedikit animasi agar menarik */
+  animation: bounce 2s infinite; 
 }
 
-/* Judul */
 .locked-title {
   color: #151e32;
   margin-bottom: 10px;
@@ -33,15 +28,13 @@
   font-size: 1.5rem;
 }
 
-/* Teks Deskripsi */
 .locked-text {
   color: #666;
   margin-bottom: 25px;
-  max-width: 400px; /* Agar teks tidak terlalu lebar di layar besar */
+  max-width: 400px; 
   line-height: 1.6;
 }
 
-/* Tombol Login */
 .btn-login-redirect {
   background-color: #f97316;
   color: white;
@@ -61,7 +54,6 @@
   box-shadow: 0 6px 15px rgba(249, 115, 22, 0.4);
 }
 
-/* Animasi Gembok Memantul Pelan */
 @keyframes bounce {
   0%, 100% { transform: translateY(0); }
   50% { transform: translateY(-10px); }

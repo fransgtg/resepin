@@ -1,5 +1,5 @@
 import React from 'react';
-import './LockedContent.css'; // Pastikan CSS diimport
+import './LockedContent.css';
 
 const LockedContent = ({ onLoginClick }) => {
   return (

@@ -1,13 +1,11 @@
 import { useState, useEffect, useRef } from 'react';
 
 export const useRecipeNavigation = (allRecipes) => {
-  // --- STATE UI ---
   const [activeCategory, setActiveCategory] = useState('All'); 
   const [searchQuery, setSearchQuery] = useState(''); 
   const [showFilterMenu, setShowFilterMenu] = useState(false); 
-  
-  // [BARU] State untuk Sorting
-  const [sortOption, setSortOption] = useState('newest'); // default: terbaru
+
+  const [sortOption, setSortOption] = useState('newest');
   const [showSortMenu, setShowSortMenu] = useState(false);
 
   const [selectedRecipe, setSelectedRecipe] = useState(null);
@@ -17,7 +15,6 @@ export const useRecipeNavigation = (allRecipes) => {
 
   const recipeSectionRef = useRef(null);
 
-  // --- HELPER UPDATE URL ---
   const updateUrl = (params) => {
     const url = new URL(window.location);
     if (params.reset) {
@@ -31,7 +28,6 @@ export const useRecipeNavigation = (allRecipes) => {
     window.history.pushState({}, '', url);
   };
 
-  // --- EFFECT: RESTORE DARI URL SAAT LOAD ---
   useEffect(() => {
     if (allRecipes.length === 0) return;
     
@@ -55,7 +51,6 @@ export const useRecipeNavigation = (allRecipes) => {
     }
   }, [allRecipes]);
 
-  // --- HANDLERS ---
   const handleOpenRecipe = (item) => {
     setSelectedRecipe(item);
     updateUrl({ reset: true, resep: item.id });
@@ -78,7 +73,6 @@ export const useRecipeNavigation = (allRecipes) => {
     updateUrl({ reset: true, kategori: category });
   };
 
-  // [BARU] Handler untuk Sort
   const handleSortClick = (option) => {
     setSortOption(option);
     setShowSortMenu(false);
@@ -116,11 +110,9 @@ export const useRecipeNavigation = (allRecipes) => {
   };
 
   return {
-    // State
     activeCategory, setActiveCategory,
     searchQuery, setSearchQuery,
     showFilterMenu, setShowFilterMenu,
-    // [BARU] Export state sort
     sortOption, setSortOption, 
     showSortMenu, setShowSortMenu,
     
@@ -130,11 +122,9 @@ export const useRecipeNavigation = (allRecipes) => {
     isAddRecipePage, setIsAddRecipePage,
     recipeSectionRef,
 
-    // Handlers
     handleOpenRecipe,
     handleCloseDetail,
     handleFilterClick,
-    // [BARU] Export handler sort
     handleSortClick, 
     handleSearch,
     goHome,

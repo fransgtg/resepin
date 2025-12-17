@@ -39,7 +39,6 @@ const FilterBar = ({
   return (
     <div className="filters" ref={recipeSectionRef}>
 
-      {/* ------------------ FILTER KATEGORI ------------------ */}
       <div className="filter-group">
         <button
           className={`btn-filter btn-filter-category ${showFilterMenu ? 'active' : ''}`}
@@ -48,7 +47,6 @@ const FilterBar = ({
             setShowSortMenu(false);
           }}
         >
-          {/* Label tombol */}
           {
             activeCategory === 'All'
               ? 'Semua Resep'
@@ -62,8 +60,6 @@ const FilterBar = ({
 
         {showFilterMenu && (
           <div className="filter-dropdown">
-            
-            {/* 🔥 Pilihan Perwakilan Menu */}
             <div
               className={`filter-item ${activeCategory === 'Perwakilan' ? 'active' : ''}`}
               onClick={() => onFilterClick('Perwakilan')}
@@ -71,7 +67,6 @@ const FilterBar = ({
               Tampilkan Perwakilan Menu (9 Resep)
             </div>
 
-            {/* 🔥 Semua resep */}
             <div
               className={`filter-item ${activeCategory === 'All' ? 'active' : ''}`}
               onClick={() => onFilterClick('All')}
@@ -79,7 +74,6 @@ const FilterBar = ({
               Semua Resep
             </div>
 
-            {/* 🔥 Kategori lainnya */}
             {categoriesList
               .filter((cat) => cat !== 'All')
               .map((cat, idx) => (
@@ -97,7 +91,6 @@ const FilterBar = ({
         )}
       </div>
 
-      {/* ------------------ FILTER SORT ------------------ */}
       <div className="filter-group">
         <button
           className={`btn-filter btn-filter-outline ${showSortMenu ? 'active' : ''}`}

@@ -1,8 +1,3 @@
-/* ==========================
-   DETAIL MODAL - CLEAN TEXT VERSION
-========================== */
-
-/* Overlay */
 .glass-overlay {
   position: fixed;
   inset: 0;
@@ -17,10 +12,9 @@
   overscroll-behavior: contain;
 }
 
-/* Main Card */
 .glass-card {
   width: 100%;
-  max-width: 900px; /* Sedikit lebih ramping karena tidak ada gambar */
+  max-width: 900px;
   height: 85vh;
   max-height: 85dvh;
   
@@ -36,7 +30,6 @@
   color: #f1f5f9;
 }
 
-/* Close Button */
 .glass-close-btn {
   position: absolute;
   top: 1.5rem;
@@ -69,9 +62,6 @@
 .glass-scroll-content::-webkit-scrollbar { width: 8px; }
 .glass-scroll-content::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
 
-/* ==========================
-   HEADER SIMPLE (TEXT ONLY)
-========================== */
 .glass-header-simple {
   padding: 3rem 2rem 1.5rem 2rem;
   text-align: center;
@@ -107,14 +97,10 @@
   justify-content: center;
 }
 
-/* ==========================
-   CONTENT BODY
-========================== */
 .glass-body {
   padding: 2rem 2.5rem;
 }
 
-/* Grid Layout */
 .glass-grid {
   display: grid;
   grid-template-columns: 1fr 1.5fr;
@@ -131,7 +117,6 @@
   color: #f97316;
 }
 
-/* Ingredients */
 .glass-ingredients-list { list-style: none; padding: 0; display: flex; flex-direction: column; gap: 0.5rem; }
 .glass-ingredient-item {
   background: rgba(255, 255, 255, 0.03);
@@ -142,7 +127,6 @@
 }
 .bullet-check { color: #f97316; font-weight: bold; }
 
-/* Steps */
 .glass-steps-container { display: flex; flex-direction: column; gap: 1.2rem; }
 .glass-step-item { display: flex; gap: 1rem; }
 .glass-step-number {
@@ -158,7 +142,6 @@
   line-height: 1.6; width: 100%; border: 1px solid rgba(255,255,255,0.05);
 }
 
-/* Admin & Footer */
 .glass-admin-box {
   background: rgba(220, 38, 38, 0.1);
   border: 1px dashed rgba(220, 38, 38, 0.4);
@@ -176,7 +159,6 @@
 }
 .glass-source-link { color: #f97316; text-decoration: none; font-weight: 600; }
 
-/* RESPONSIVE */
 @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
 @media (max-width: 768px) {

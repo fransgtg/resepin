@@ -12,7 +12,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
   const [password, setPassword] = useState('');
   const [fullName, setFullName] = useState(''); 
 
-  // --- LOGIKA BACKEND (SUPABASE) ---
+  //LOGIKA BACKEND (SUPABASE)
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -67,8 +67,7 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
   return (
     <div className="auth-overlay">
       <div className="auth-card">
-        
-        {/* JUDUL */}
+
         <h2 className="auth-title">
           {isRegister ? 'Buat Akun' : 'Selamat Datang'}
         </h2>
@@ -76,17 +75,14 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
           {isRegister ? 'Gabung untuk akses resep lengkap.' : 'Silakan login untuk melanjutkan.'}
         </p>
 
-        {/* PESAN ERROR */}
         {errorMsg && (
           <div className="auth-error">
             {errorMsg}
           </div>
         )}
 
-        {/* FORM INPUT */}
         <form onSubmit={handleSubmit} className="auth-form">
-          
-          {/* Input Nama (Hanya muncul saat Register) */}
+
           {isRegister && (
             <input 
               type="text" 
@@ -126,7 +122,6 @@ const AuthForm = ({ onCancel, onLoginSuccess }) => {
           </button>
         </form>
 
-        {/* FOOTER / TOGGLE */}
         <p className="auth-footer">
           {isRegister ? 'Sudah punya akun? ' : 'Belum punya akun? '}
           <span 

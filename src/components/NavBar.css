@@ -1,8 +1,5 @@
-/* src/components/NavBar.css */
-
-/* Container Utama */
 .navbar {
-  background-color: #151e32; /* Biru Gelap */
+  background-color: #151e32;
   width: 100%;
   height: 80px;
   padding: 0 5%;
@@ -16,7 +13,6 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
-/* Bagian Kiri (Logo) */
 .navbar-left {
   flex: 1;
   display: flex;
@@ -38,7 +34,6 @@
   transform: scale(1.02);
 }
 
-/* Bagian Tengah (Search) */
 .navbar-center {
   flex: 2;
   display: flex;
@@ -64,7 +59,7 @@
 }
 
 .search-input:focus {
-  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3); /* Ring oranye saat fokus */
+  box-shadow: 0 0 0 3px rgba(249, 115, 22, 0.3); 
 }
 
 .search-btn {
@@ -83,7 +78,6 @@
   color: #f97316;
 }
 
-/* Bagian Kanan (Navigasi & User) */
 .navbar-right {
   flex: 1;
   display: flex;
@@ -106,7 +100,6 @@
   color: #ffffff;
 }
 
-/* Tombol Login/Register */
 .login-btn {
   background-color: #222b40;
   color: white;
@@ -123,7 +116,6 @@
   transform: translateY(-1px);
 }
 
-/* --- Area User Logged In (BARU) --- */
 .user-menu {
   display: flex;
   align-items: center;
@@ -136,7 +128,6 @@
   font-weight: 500;
 }
 
-/* Tombol Logout (Override style login-btn) */
 .btn-logout {
   background-color: #ef4444 !important;
   border-color: #dc2626 !important;
@@ -149,7 +140,6 @@
   box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4);
 }
 
-/* Responsif */
 @media (max-width: 900px) {
   .navbar {
     flex-direction: column;
@@ -164,8 +154,7 @@
     width: 100%;
     justify-content: center;
   }
-  
-  /* Agar menu user di HP tetap rapi */
+
   .user-menu {
     justify-content: center;
   }

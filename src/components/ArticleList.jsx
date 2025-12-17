@@ -3,7 +3,7 @@ import './ArticleList.css';
 
 const ArticleList = ({ currentUser, onLoginClick }) => {
   
-  // --- KONTEN TERKUNCI ---
+  //KONTEN TERKUNCI
   if (!currentUser) {
     return (
       <div className="locked-wrapper">
@@ -17,14 +17,13 @@ const ArticleList = ({ currentUser, onLoginClick }) => {
     );
   }
 
-  // --- ARTIKEL ---
+  // ARTIKEL
   return (
     <div className="article-wrapper">
       <h1 className="page-main-title">Artikel Pilihan</h1>
       
       <div className="article-card">
-        
-        {/* Gambar Header */}
+
         <div className="article-img-header">
           <img 
             src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?q=80&w=2053&auto=format&fit=crop" 
@@ -32,7 +31,6 @@ const ArticleList = ({ currentUser, onLoginClick }) => {
           />
         </div>
 
-        {/* Konten Teks */}
         <div className="article-body">
           <h2 className="content-headline">
             Panduan Lengkap Hidup Sehat: Pengertian, Pola Makan, dan Manfaat

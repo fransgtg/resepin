@@ -1,4 +1,3 @@
-/* ===== WRAPPER ===== */
 .glass-comments-wrapper {
   margin-top: clamp(0.75rem, 2vw, 1rem);
   padding: clamp(0.75rem, 2vw, 1rem);
@@ -8,7 +7,6 @@
   border: 1px solid rgba(255,255,255,0.15);
 }
 
-/* ===== TITLE ===== */
 .glass-comments-title {
   font-size: clamp(1.25rem, 3vw, 1.5rem);
   margin-bottom: clamp(0.75rem, 1.5vw, 1rem);
@@ -16,7 +14,6 @@
   color: white;
 }
 
-/* ===== FORM ===== */
 .glass-comment-form {
   display: flex;
   flex-direction: column;
@@ -52,7 +49,6 @@
   background: rgba(255,130,20,0.85);
 }
 
-/* LOGIN ALERT */
 .glass-login-alert {
   background: rgba(255,255,255,0.15);
   padding: clamp(0.5rem, 1vw, 0.75rem);
@@ -62,17 +58,15 @@
   font-size: clamp(0.8rem, 1.5vw, 0.9rem);
 }
 
-/* ===== LIST ===== */
 .glass-comments-list {
   display: flex;
   flex-direction: column;
   gap: clamp(0.5rem, 1vw, 0.75rem);
   max-height: 60vh;
   overflow-y: auto;
-  padding-right: 4px; /* scrollbar space */
+  padding-right: 4px; 
 }
 
-/* ===== COMMENT ITEM (mengganti glass-comment-card) ===== */
 .glass-comment-item {
   background: rgba(255,255,255,0.08);
   border-radius: 0.75rem;
@@ -82,7 +76,6 @@
   gap: 0.5rem;
 }
 
-/* HEADER */
 .glass-comment-header {
   display: flex;
   justify-content: space-between;
@@ -91,7 +84,6 @@
   gap: 0.5rem;
 }
 
-/* USER INFO */
 .glass-user-info {
   display: flex;
   align-items: center;
@@ -126,7 +118,6 @@
   color: #d1d5db;
 }
 
-/* ACTION BUTTONS */
 .glass-comment-actions {
   display: flex;
   flex-wrap: wrap;
@@ -158,7 +149,6 @@
 .glass-btn-small.green:hover { background: rgba(70,220,140,0.8); }
 .glass-btn-small.gray:hover { background: rgba(230,230,230,0.5); }
 
-/* COMMENT TEXT */
 .glass-comment-text {
   margin-top: clamp(0.5rem, 1vw, 0.75rem);
   color: rgba(255,255,255,0.9);
@@ -166,7 +156,6 @@
   font-size: clamp(0.85rem, 1.5vw, 0.95rem);
 }
 
-/* EDIT TEXTAREA */
 .glass-edit-input {
   width: 100%;
   min-height: clamp(60px, 8vw, 70px);
@@ -179,7 +168,6 @@
   font-size: clamp(0.85rem, 1.5vw, 0.95rem);
 }
 
-/* SCROLLBAR */
 .glass-comments-list::-webkit-scrollbar {
   width: 6px;
 }

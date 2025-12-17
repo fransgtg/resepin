@@ -33,7 +33,6 @@ const RecipeGrid = ({
 
       <div className="recipe-grid">
 
-        {/* CARD TAMBAH RESEP */}
         {onAddRecipe && (
           <div className="card add-recipe-card" onClick={onAddRecipe}>
             <div className="add-icon-circle">+</div>
@@ -41,7 +40,6 @@ const RecipeGrid = ({
           </div>
         )}
 
-        {/* LIST RESEP */}
         {recipes.length > 0 ? (
           recipes.map((item) => (
             <RecipeCard

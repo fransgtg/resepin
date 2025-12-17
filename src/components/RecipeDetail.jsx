@@ -19,13 +19,11 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
   return (
     <div className="glass-overlay" onClick={onClose}>
       <div className="glass-card" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Tombol Close */}
+
         <button className="glass-close-btn" onClick={onClose} aria-label="Close">✕</button>
 
         <div className="glass-scroll-content">
-          
-          {/* === HEADER (HANYA TEKS) === */}
+
           <div className="glass-header-simple">
             <span className="glass-badge">{recipe.category || "Umum"}</span>
             <h1 className="glass-title">{recipe.title}</h1>
@@ -36,8 +34,7 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
           </div>
 
           <div className="glass-body">
-            
-            {/* Admin Delete Action */}
+
             {isAdmin && (
               <div className="glass-admin-box">
                 <button 
@@ -49,10 +46,8 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
               </div>
             )}
 
-            {/* Grid Layout */}
             <div className="glass-grid">
-              
-              {/* Kolom Kiri: Bahan */}
+
               <div className="glass-section">
                 <h3 className="glass-section-title">Bahan-bahan 🥕</h3>
                 <ul className="glass-ingredients-list">
@@ -67,7 +62,6 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
                 </ul>
               </div>
 
-              {/* Kolom Kanan: Cara Membuat */}
               <div className="glass-section">
                 <h3 className="glass-section-title">Cara Membuat 🍳</h3>
                 <div className="glass-steps-container">
@@ -83,7 +77,6 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
               </div>
             </div>
 
-            {/* Source Link */}
             {recipe.url && (
               <div className="glass-source-box">
                 <p style={{marginBottom:'0.5rem', color:'#aaa'}}>Referensi:</p>
@@ -93,7 +86,6 @@ const RecipeDetail = ({ recipe, onClose, currentUser, isAdmin, onDelete }) => {
               </div>
             )}
 
-            {/* Komentar */}
             <div style={{marginTop: '2rem'}}>
               <CommentsSection recipeId={recipe.id} currentUser={currentUser} isAdmin={isAdmin} />
             </div>

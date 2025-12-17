@@ -4,7 +4,6 @@ import { useModalHistory } from '../hooks/useModalHistory';
 import './AddRecipeForm.css';
 
 const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
-  // Hook untuk tombol 'Back' browser
   useModalHistory(onCancel, true);
 
   const [loading, setLoading] = useState(false);
@@ -17,7 +16,7 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
 
   const categories = [
     "Olahan Ayam","Olahan Ikan","Olahan Kambing","Olahan Sapi",
-    "Olahan Tahu","Olahan Telur","Olahan Tempe","Olahan Udang", "Lainnya"
+    "Olahan Tahu","Olahan Telur","Olahan Tempe","Olahan Udang"
   ];
 
   const handleSubmit = async (e) => {
@@ -25,7 +24,6 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
     if (!currentUser) return alert("Silakan login dulu!");
     setLoading(true);
 
-    // Format text area menjadi string dengan pemisah '--'
     const formattedIngredients = ingredientsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
     const formattedSteps = stepsText.split('\n').map(l => l.trim()).filter(l => l).join('--');
 
@@ -45,7 +43,6 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
     if (error) {
       alert('Gagal: ' + error.message);
     } else {
-      // Reset form atau tutup modal
       alert('Resep Berhasil Diterbitkan! ✨');
       if (onSuccess) onSuccess();
       else onCancel();
@@ -54,10 +51,8 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
 
   return (
     <div className="dark-glass-overlay" onClick={onCancel}>
-      {/* Stop propagation agar klik di dalam card tidak menutup modal */}
       <div className="dark-glass-card" onClick={(e) => e.stopPropagation()}>
-        
-        {/* Tombol Close Absolut */}
+
         <button className="close-btn-x" onClick={onCancel} aria-label="Close">✕</button>
 
         <div className="dark-glass-header">
@@ -67,8 +62,6 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
 
         <div className="dark-glass-scroll">
           <form id="recipeForm" onSubmit={handleSubmit} className="dark-glass-form-grid">
-            
-            {/* KOLOM KIRI: Info Dasar */}
             <div className="form-col">
               <div className="form-group">
                 <label>Judul Resep</label>
@@ -106,7 +99,6 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
                 />
               </div>
 
-              {/* PREVIEW IMAGE */}
               {imgUrl && (
                 <div className="img-preview-box">
                   <img 
@@ -132,7 +124,6 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
               </div>
             </div>
 
-            {/* KOLOM KANAN: Detail Resep */}
             <div className="form-col">
               <div className="form-group" style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
                 <label>Bahan-bahan</label>
@@ -168,7 +159,7 @@ const AddRecipeForm = ({ onCancel, onSuccess, currentUser }) => {
           </button>
           <button 
             type="submit" 
-            form="recipeForm" /* Mengaitkan tombol ini dengan form id="recipeForm" */
+            form="recipeForm"
             className="submit-btn" 
             disabled={loading}
           >

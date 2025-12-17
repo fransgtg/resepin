@@ -1,6 +1,3 @@
-/* ================================
-   FILTER BAR CONTAINER
-================================ */
 .filters {
   position: relative;
   display: flex;
@@ -10,14 +7,10 @@
   flex-wrap: wrap;
 }
 
-/* Wrapper setiap tombol */
 .filter-group {
   position: relative;
 }
 
-/* ================================
-   TOMBOL FILTER UTAMA
-================================ */
 .btn-filter {
   background-color: #f97316;
   color: white;
@@ -36,21 +29,16 @@
   box-shadow: 0 4px 10px rgba(249, 115, 22, 0.3);
 }
 
-/* Hover dan aktivasi */
 .btn-filter:hover,
 .btn-filter.active {
   background-color: #ea580c;
   transform: translateY(-2px);
 }
 
-/* Tombol kategori */
 .btn-filter-category {
   min-width: 200px;
 }
 
-/* ================================
-   TOMBOL SORT (OUTLINE)
-================================ */
 .btn-filter-outline {
   min-width: 160px;
   background-color: white;
@@ -66,9 +54,6 @@
   transform: translateY(-2px);
 }
 
-/* ================================
-   DROPDOWN
-================================ */
 .filter-dropdown {
   position: absolute;
   top: 120%;
@@ -90,7 +75,6 @@
   min-width: 160px;
 }
 
-/* Item pada dropdown */
 .filter-item {
   padding: 12px 15px;
   border-radius: 10px;
@@ -111,17 +95,11 @@
   font-weight: 700;
 }
 
-/* ================================
-   ANIMASI
-================================ */
 @keyframes fadeIn {
   from { opacity: 0; transform: translateY(-10px); }
   to { opacity: 1; transform: translateY(0); }
 }
 
-/* ================================
-   RESPONSIVE
-================================ */
 @media (max-width: 900px) {
   .filters {
     justify-content: center;

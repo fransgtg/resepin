@@ -9,14 +9,14 @@ body {
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  width: 100vw; /* Pastikan body ambil lebar penuh */
+  width: 100vw;
   overflow-x: hidden;
 }
 
 #root {
-  width: 100%;       /* PENTING: Agar root tidak dibatasi */
-  max-width: 100%;   /* Hapus batasan lebar bawaan */
+  width: 100%;       
+  max-width: 100%;  
   margin: 0;
   padding: 0;
-  text-align: left;  /* Reset text align center bawaan */
+  text-align: left;  
 }

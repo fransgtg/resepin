@@ -6,7 +6,6 @@ export const useAuth = () => {
   const [loadingAuth, setLoadingAuth] = useState(true);
 
   useEffect(() => {
-    // Helper untuk format data user
     const formatUser = (user) => {
       if (!user) return null;
       return {
@@ -39,22 +38,14 @@ export const useAuth = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  // === FUNGSI LOGOUT YANG DIPERBAIKI ===
   const logout = async () => {
     try {
-      // Coba logout server (abaikan jika error 403/network)
       await supabase.auth.signOut();
     } catch (error) {
       console.warn("Logout server error (diabaikan):", error);
     } finally {
-      // LANGKAH WAJIB: Bersihkan sisi Client (Browser)
       setCurrentUser(null);
-      
-      // Hapus token yang nyangkut di Local Storage
-      // (Ini membersihkan semua data local storage aplikasi Anda)
       localStorage.clear(); 
-      
-      // Refresh halaman / Redirect ke Home agar state benar-benar bersih
       window.location.href = '/';
     }
   };

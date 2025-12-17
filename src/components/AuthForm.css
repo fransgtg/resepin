@@ -1,4 +1,3 @@
-/* Overlay Background (Latar gelap transparan) */
 .auth-overlay {
   position: fixed;
   top: 0;
@@ -14,7 +13,6 @@
   animation: fadeIn 0.4s ease-out;
 }
 
-/* Kartu Form Utama */
 .auth-card {
   background-color: white;
   padding: 40px;
@@ -26,7 +24,6 @@
   position: relative;
 }
 
-/* Judul dan Subjudul */
 .auth-title {
   color: #151e32;
   margin-bottom: 10px;
@@ -42,7 +39,6 @@
   font-size: 0.9rem;
 }
 
-/* Pesan Error */
 .auth-error {
   background-color: #fee2e2;
   color: #b91c1c;
@@ -53,14 +49,12 @@
   text-align: left;
 }
 
-/* Form Container */
 .auth-form {
   display: flex;
   flex-direction: column;
   gap: 15px;
 }
 
-/* Input Styles */
 .auth-input {
   width: 100%;
   padding: 15px;
@@ -79,7 +73,6 @@
   background-color: #fff;
 }
 
-/* Tombol Submit (Daftar/Masuk) */
 .auth-btn-submit {
   margin-top: 10px;
   background-color: #f97316;
@@ -103,7 +96,6 @@
   cursor: not-allowed;
 }
 
-/* Footer (Text Switch Login/Register) */
 .auth-footer {
   margin-top: 25px;
   font-size: 0.9rem;
@@ -121,7 +113,6 @@
   color: #ea580c;
 }
 
-/* Tombol Nanti Saja */
 .auth-btn-cancel {
   margin-top: 15px;
   background: none;
@@ -137,7 +128,6 @@
   text-decoration: underline;
 }
 
-/* Animasi */
 @keyframes fadeIn {
   from { opacity: 0; }
   to { opacity: 1; }

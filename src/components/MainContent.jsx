@@ -46,7 +46,7 @@ const MainContent = ({
     checkUserRole();
   }, [currentUser]); 
 
-  // --- LOGIN PAGE ---
+  //LOGIN PAGE
   if (nav.isLoginPage) {
     return (
       <AuthForm 
@@ -56,7 +56,7 @@ const MainContent = ({
     );
   }
 
-  // --- ARTICLE PAGE ---
+  //ARTICLE PAGE
   if (nav.isArticlePage) {
     return currentUser ? (
       <ArticleList currentUser={currentUser} />
@@ -68,7 +68,7 @@ const MainContent = ({
     );
   }
 
-  // --- ADD RECIPE PAGE ---
+  //ADD RECIPE PAGE
   if (nav.isAddRecipePage) {
     if (!isAdmin) {
       alert("Maaf, hanya Admin yang boleh menambah resep.");
@@ -93,7 +93,7 @@ const MainContent = ({
     );
   }
 
-  // --- RECIPE DETAIL PAGE ---
+  //RECIPE DETAIL PAGE
   if (nav.selectedRecipe) {
     return (
       <RecipeDetail 
@@ -117,7 +117,7 @@ const MainContent = ({
     );
   }
 
-  // --- MAIN HOMEPAGE ---
+  //MAIN HOMEPAGE
   return (
     <>
       <Hero />
@@ -143,7 +143,7 @@ const MainContent = ({
           searchQuery={nav.searchQuery}
           activeCategory={nav.activeCategory}
 
-          activeSort={nav.sortOption}   // sorting dikirim ke RecipeGrid
+          activeSort={nav.sortOption} 
 
           onRecipeClick={nav.handleOpenRecipe}
           onAddRecipe={isAdmin ? nav.goToAddRecipe : null}

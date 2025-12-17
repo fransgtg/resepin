@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import './Hero.css'; // Pastikan file CSS-nya diimport
+import './Hero.css'; 
 
 const Hero = () => {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  // Daftar Gambar Slider (Ganti URL ini jika punya gambar sendiri)
   const slides = [
     {
       id: 1,
@@ -23,7 +22,6 @@ const Hero = () => {
     }
   ];
 
-  // Efek Auto-Slide setiap 5 detik
   useEffect(() => {
     const slideInterval = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
@@ -46,12 +44,10 @@ const Hero = () => {
           src={slides[currentSlide].img} 
           alt={slides[currentSlide].alt} 
         />
-        
-        {/* Tombol Navigasi Kiri/Kanan */}
+
         <button className="nav-btn prev" onClick={prevSlide}>&#10094;</button>
         <button className="nav-btn next" onClick={nextSlide}>&#10095;</button>
 
-        {/* Titik Indikator (Dots) */}
         <div className="dots">
           {slides.map((_, index) => (
             <span 
